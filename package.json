@@ -1,0 +1,38 @@
+{
+  "name": "@corets/schema",
+  "version": "0.0.0",
+  "author": "Maxim Kott",
+  "license": "MIT",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "/dist"
+  ],
+  "repository": "github:corets/schema",
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org"
+  },
+  "scripts": {
+    "test": "jest",
+    "lint": "tsc --noEmit",
+    "format": "prettier --write .",
+    "build": "rm -rf dist && tsc -p tsconfig.build.json",
+    "release": "np --no-release-draft --tag next",
+    "prerelease": "np prerelease --no-release-draft --tag dev"
+  },
+  "devDependencies": {
+    "@types/jest": "^25.1.4",
+    "@types/lodash": "^4.14.167",
+    "@types/node": "^13.9.1",
+    "jest": "^25.1.0",
+    "prettier": "2.2.1",
+    "ts-jest": "^25.2.1",
+    "typescript": "^3.8.3"
+  },
+  "dependencies": {
+    "@corets/translator": "^0.0.1-0",
+    "dayjs": "^1.10.3",
+    "lodash": "^4.17.20"
+  }
+}
