@@ -5,7 +5,7 @@ import {
 } from "./types"
 import { isValidationError } from "./isValidationError"
 import { Schema } from "./Schema"
-import { isBoolean } from "lodash"
+import { isBoolean } from "lodash-es"
 
 export const testValue = (
   value: any,

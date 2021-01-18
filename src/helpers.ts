@@ -6,7 +6,7 @@ import {
   map,
   mapKeys,
   mapValues,
-} from "lodash"
+} from "lodash-es"
 
 // https://github.com/Kikobeats/map-values-deep
 export const mapValuesDeep = (

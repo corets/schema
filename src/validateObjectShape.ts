@@ -1,6 +1,6 @@
 import { ObjectShape } from "./schemas/ObjectSchema"
 import { ValidationError } from "./types"
-import { get, keys } from "lodash"
+import { get, keys } from "lodash-es"
 import { joinPath } from "./helpers"
 
 export const validateObjectShape = (

@@ -1,5 +1,5 @@
 import { ObjectShape } from "./schemas/ObjectSchema"
-import { isObjectLike, keys } from "lodash"
+import { isObjectLike, keys } from "lodash-es"
 
 export const sanitizeObjectShapeAsync = async <
   TValue,

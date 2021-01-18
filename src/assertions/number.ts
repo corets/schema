@@ -1,4 +1,4 @@
-import { isInteger, isNumber, round } from "lodash"
+import { isInteger, isNumber, round } from "lodash-es"
 import { isDefined } from "./mixed"
 import { LazyValue, ValidationFunctionResult } from "../types"
 import { lazyValue } from "../lazyValue"

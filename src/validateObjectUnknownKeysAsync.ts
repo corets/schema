@@ -1,5 +1,5 @@
 import { ObjectShape } from "./schemas/ObjectSchema"
-import { difference, keys } from "lodash"
+import { difference, keys } from "lodash-es"
 import { ValidationError, ValidationSchema } from "./types"
 import { joinPath } from "./helpers"
 

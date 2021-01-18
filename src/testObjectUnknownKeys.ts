@@ -1,6 +1,6 @@
 import { ObjectShape } from "./schemas/ObjectSchema"
 import { ValidationSchema } from "./types"
-import { difference, keys } from "lodash"
+import { difference, keys } from "lodash-es"
 
 export const testObjectUnknownKeys = (
   value: any,

@@ -6,7 +6,7 @@ import {
   mapKeys,
   mapValues,
   snakeCase,
-} from "lodash"
+} from "lodash-es"
 import { isDefined } from "./mixed"
 import { mapKeysDeep, mapValuesDeep } from "../helpers"
 import { LazyValue, ValidationFunctionResult } from "../types"

@@ -6,7 +6,7 @@ import {
 import { translateValidationDefinition } from "./translateValidationDefinition"
 import { createValidationError } from "./createValidationError"
 import { isValidationError } from "./isValidationError"
-import { isArray, isBoolean, isString } from "lodash"
+import { isArray, isBoolean, isString } from "lodash-es"
 import { Schema } from "./Schema"
 
 export const validateValueAsync = async (

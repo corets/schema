@@ -1,7 +1,7 @@
 import { ObjectShape } from "./schemas/ObjectSchema"
 import { StringSchema } from "./schemas/StringSchema"
 import { ValidationError } from "./types"
-import { difference, keys } from "lodash"
+import { difference, keys } from "lodash-es"
 import { joinPath } from "./helpers"
 
 export const validateObjectUnknownValues = (

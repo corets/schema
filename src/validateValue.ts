@@ -7,7 +7,7 @@ import {
 import { createValidationError } from "./createValidationError"
 import { translateValidationDefinition } from "./translateValidationDefinition"
 import { isValidationError } from "./isValidationError"
-import { isArray, isString, isBoolean } from "lodash"
+import { isArray, isString, isBoolean } from "lodash-es"
 import { Schema } from "./Schema"
 
 export const validateValue = (

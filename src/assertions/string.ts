@@ -10,7 +10,7 @@ import {
   snakeCase,
   startsWith,
   trim,
-} from "lodash"
+} from "lodash-es"
 import { isDefined } from "./mixed"
 import { LazyValue, ValidationFunctionResult } from "../types"
 import { lazyValue } from "../lazyValue"

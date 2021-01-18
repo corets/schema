@@ -1,5 +1,5 @@
 import { isDefined } from "./mixed"
-import { isBoolean } from "lodash"
+import { isBoolean } from "lodash-es"
 import { LazyValue, ValidationFunctionResult } from "../types"
 import { lazyValue } from "../lazyValue"
 

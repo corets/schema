@@ -1,5 +1,5 @@
 import { ObjectShape } from "./schemas/ObjectSchema"
-import { difference, keys, isObjectLike } from "lodash"
+import { difference, keys, isObjectLike } from "lodash-es"
 import { ValidationError } from "./types"
 import { createValidationError } from "./createValidationError"
 import { translateMessage } from "./translateMessage"

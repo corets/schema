@@ -1,5 +1,5 @@
 import { ValidationSchema } from "./types"
-import { isArray } from "lodash"
+import { isArray } from "lodash-es"
 
 export const sanitizeArrayValues = <TValue, TSanitizedValue = TValue>(
   value: TValue,

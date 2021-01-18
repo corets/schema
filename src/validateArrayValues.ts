@@ -1,5 +1,5 @@
 import { ValidationError, ValidationSchema } from "./types"
-import { isArray } from "lodash"
+import { isArray } from "lodash-es"
 import { joinPath } from "./helpers"
 
 export const validateArrayValues = (

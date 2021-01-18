@@ -1,5 +1,5 @@
 import { ObjectSchema } from "../index"
-import { isString, keys } from "lodash"
+import { isString, keys } from "lodash-es"
 import { translateMessage } from "../translateMessage"
 import { string } from "../factories/string"
 import { array } from "../factories/array"
