@@ -47,6 +47,32 @@ describe("StringSchema", () => {
     ).toBe(false)
   })
 
+  test("translates into another language", async () => {
+    const s = string().required()
+
+    const errors1 = s.validate(null, "de")!
+    const errors2 = (await s.validateAsync(null, "de"))!
+    const errors3 = (await s.validateAsync(null, "xx", "de"))!
+
+    expect(errors1.length).toBe(1)
+    expect(errors1[0].message).toBe("Erforderlich")
+    expect(errors1[0].message).toBe(
+      translateMessage("string_required", [], "de")
+    )
+
+    expect(errors2.length).toBe(1)
+    expect(errors2[0].message).toBe("Erforderlich")
+    expect(errors2[0].message).toBe(
+      translateMessage("string_required", [], "de")
+    )
+
+    expect(errors3.length).toBe(1)
+    expect(errors3[0].message).toBe("Erforderlich")
+    expect(errors3[0].message).toBe(
+      translateMessage("string_required", [], "de")
+    )
+  })
+
   test("optional", async () => {
     const s = string().optional()
 
@@ -691,8 +717,8 @@ describe("StringSchema", () => {
   })
 
   test("dateBetween", async () => {
-    const after = dayjs(new Date()).subtract(3, "days").toDate()
-    const before = dayjs(new Date()).add(3, "days").toDate()
+    const after = dayjs().subtract(3, "days").toDate()
+    const before = dayjs().add(3, "days").toDate()
     const now = new Date()
     const s1 = string().dateBetween(after, before)
 
@@ -731,8 +757,8 @@ describe("StringSchema", () => {
   })
 
   test("dateBetween", async () => {
-    const after = dayjs(new Date()).subtract(3, "days").toDate()
-    const before = dayjs(new Date()).add(3, "days").toDate()
+    const after = dayjs().subtract(3, "days").toDate()
+    const before = dayjs().add(3, "days").toDate()
     const now = new Date()
     const s1 = string().dateBetweenOrSame(after, before)
 

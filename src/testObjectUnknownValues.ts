@@ -1,6 +1,6 @@
-import { ObjectShape } from "./schemas/ObjectSchema"
 import { StringSchema } from "./schemas/StringSchema"
 import { difference, keys } from "lodash-es"
+import { ObjectShape } from "./types"
 
 export const testObjectUnknownValues = (
   value: any,

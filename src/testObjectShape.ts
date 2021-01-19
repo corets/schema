@@ -1,4 +1,4 @@
-import { ObjectShape } from "./schemas/ObjectSchema"
+import { ObjectShape } from "./types"
 
 export const testObjectShape = (
   value: any,

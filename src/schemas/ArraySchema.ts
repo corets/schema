@@ -68,20 +68,31 @@ export class ArraySchema extends Schema<any[]> {
 
   protected customValidationBehavior(
     value: any,
-    errors: ValidationError[]
+    errors: ValidationError[],
+    language?: string,
+    fallbackLanguage?: string
   ): ValidationError[] {
-    const arrayValuesErrors = validateArrayValues(value, this.valuesSchema)
+    const arrayValuesErrors = validateArrayValues(
+      value,
+      this.valuesSchema,
+      language,
+      fallbackLanguage
+    )
 
     return [...errors, ...arrayValuesErrors]
   }
 
   protected async customValidationBehaviorAsync(
     value: any,
-    errors: ValidationError[]
+    errors: ValidationError[],
+    language?: string,
+    fallbackLanguage?: string
   ): Promise<ValidationError[]> {
     const arrayValuesErrors = await validateArrayValuesAsync(
       value,
-      this.valuesSchema
+      this.valuesSchema,
+      language,
+      fallbackLanguage
     )
 
     return [...errors, ...arrayValuesErrors]

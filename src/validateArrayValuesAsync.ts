@@ -4,7 +4,9 @@ import { joinPath } from "./helpers"
 
 export const validateArrayValuesAsync = async (
   values: any,
-  valuesSchema: ValidationSchema | undefined
+  valuesSchema: ValidationSchema | undefined,
+  language?: string,
+  fallbackLanguage?: string
 ): Promise<ValidationError[]> => {
   if (!valuesSchema || !isArray(values)) return []
 
@@ -12,7 +14,11 @@ export const validateArrayValuesAsync = async (
 
   await Promise.all(
     values.map(async (value, index) => {
-      const newErrors = await valuesSchema.validateAsync(value)
+      const newErrors = await valuesSchema.validateAsync(
+        value,
+        language,
+        fallbackLanguage
+      )
 
       if (newErrors) {
         newErrors.forEach((error) => {

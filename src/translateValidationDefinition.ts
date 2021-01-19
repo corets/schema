@@ -3,9 +3,19 @@ import { lazyValue } from "./lazyValue"
 import { translateMessage } from "./translateMessage"
 
 export const translateValidationDefinition = (
-  definition: ValidationDefinition
+  definition: ValidationDefinition,
+  language?: string,
+  fallbackLanguage?: string
 ): string => {
   const customMessage = lazyValue(definition.customMessage)
 
-  return customMessage || translateMessage(definition.type, definition.args)
+  return (
+    customMessage ||
+    translateMessage(
+      definition.type,
+      definition.args,
+      language,
+      fallbackLanguage
+    )
+  )
 }

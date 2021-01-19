@@ -1,5 +1,5 @@
-import { ObjectShape } from "./schemas/ObjectSchema"
 import { isObjectLike, keys } from "lodash-es"
+import { ObjectShape } from "./types"
 
 export const sanitizeObjectShape = <TValue, TSanitizedValue = TValue>(
   value: TValue,

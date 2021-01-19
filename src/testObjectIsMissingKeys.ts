@@ -1,5 +1,5 @@
-import { ObjectShape } from "./schemas/ObjectSchema"
 import { difference, keys } from "lodash-es"
+import { ObjectShape } from "./types"
 
 export const testObjectIsMissingKeys = <TValue = any>(
   value: any,

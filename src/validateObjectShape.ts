@@ -1,20 +1,21 @@
-import { ObjectShape } from "./schemas/ObjectSchema"
-import { ValidationError } from "./types"
+import { ObjectShape, ValidationError } from "./types"
 import { get, keys } from "lodash-es"
 import { joinPath } from "./helpers"
 
 export const validateObjectShape = (
   value: any,
-  objectShape: ObjectShape<any> | undefined
+  objectShape: ObjectShape<any> | undefined,
+  language?: string,
+  fallbackLanguage?: string
 ): ValidationError[] => {
   if (!objectShape) return []
 
   const errors: ValidationError[] = []
 
-  keys(objectShape).map(async (key) => {
+  keys(objectShape).map((key) => {
     const shapeValue = objectShape[key]
     const keyValue = get(value, key)
-    const newErrors = await shapeValue.validate(keyValue)
+    const newErrors = shapeValue.validate(keyValue, language, fallbackLanguage)
 
     if (newErrors) {
       newErrors.forEach((error) => {

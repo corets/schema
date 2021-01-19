@@ -11,13 +11,19 @@ import { Schema } from "./Schema"
 
 export const validateValueAsync = async (
   value: any,
-  definitions: ValidationDefinition[]
+  definitions: ValidationDefinition[],
+  language?: string,
+  fallbackLanguage?: string
 ): Promise<ValidationError[]> => {
   const errors: ValidationError[] = []
 
   for (let definition of definitions) {
     if (definition.validator instanceof Schema) {
-      const newErrors = await definition.validator.validateAsync(value)
+      const newErrors = await definition.validator.validateAsync(
+        value,
+        language,
+        fallbackLanguage
+      )
 
       if (newErrors) {
         errors.push(...newErrors)
@@ -29,7 +35,7 @@ export const validateValueAsync = async (
       )
 
       if (result instanceof Schema) {
-        result = await result.validateAsync(value)
+        result = await result.validateAsync(value, language, fallbackLanguage)
       }
 
       if (
@@ -47,7 +53,11 @@ export const validateValueAsync = async (
             definition.type,
             isString(result)
               ? result
-              : translateValidationDefinition(definition),
+              : translateValidationDefinition(
+                  definition,
+                  language,
+                  fallbackLanguage
+                ),
             definition.args,
             value
           )
