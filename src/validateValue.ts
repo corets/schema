@@ -3,6 +3,7 @@ import {
   ValidationError,
   ValidationFunction,
   ValidationFunctionResult,
+  ValidationOptions,
 } from "./types"
 import { createValidationError } from "./createValidationError"
 import { translateValidationDefinition } from "./translateValidationDefinition"
@@ -13,17 +14,15 @@ import { Schema } from "./Schema"
 export const validateValue = (
   value: any,
   definitions: ValidationDefinition[],
-  language?: string,
-  fallbackLanguage?: string
+  options: ValidationOptions
 ): ValidationError[] => {
   const errors: ValidationError[] = []
 
   for (let definition of definitions) {
     if (definition.validator instanceof Schema) {
-      const newErrors = definition.validator.validate(
+      const newErrors = definition.validator.validateWithRawErrors(
         value,
-        language,
-        fallbackLanguage
+        options
       )
 
       if (newErrors) {
@@ -43,7 +42,7 @@ export const validateValue = (
 
       // we might get a schema from a validation function
       if (result instanceof Schema) {
-        result = result.validate(value, language, fallbackLanguage)
+        result = result.validateWithRawErrors(value, options)
       }
 
       // conditional definitions must always return some sort of an error,
@@ -67,8 +66,8 @@ export const validateValue = (
               ? result
               : translateValidationDefinition(
                   definition,
-                  language,
-                  fallbackLanguage
+                  options.language,
+                  options.fallbackLanguage
                 ),
             definition.args,
             value

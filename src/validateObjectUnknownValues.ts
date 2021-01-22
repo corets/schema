@@ -1,5 +1,5 @@
 import { StringSchema } from "./schemas/StringSchema"
-import { ObjectShape, ValidationError } from "./types"
+import { ObjectShape, ValidationError, ValidationOptions } from "./types"
 import { difference, keys } from "lodash-es"
 import { joinPath } from "./helpers"
 
@@ -7,8 +7,7 @@ export const validateObjectUnknownValues = (
   value: any,
   objectShape: ObjectShape<any> | undefined,
   unknownValuesSchema: StringSchema | undefined,
-  language?: string,
-  fallbackLanguage?: string
+  options: ValidationOptions
 ): ValidationError[] => {
   if (!unknownValuesSchema) return []
 
@@ -17,10 +16,9 @@ export const validateObjectUnknownValues = (
 
   unknownKeys.map((unknownKey) => {
     const unknownValue = value[unknownKey]
-    const newErrors = unknownValuesSchema.validate(
+    const newErrors = unknownValuesSchema.validateWithRawErrors(
       unknownValue,
-      language,
-      fallbackLanguage
+      options
     )
 
     if (newErrors) {

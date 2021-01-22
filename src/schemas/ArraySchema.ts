@@ -19,6 +19,7 @@ import {
   CustomValidationMessage,
   LazyValue,
   ValidationError,
+  ValidationOptions,
   ValidationSchema,
 } from "../types"
 import { createValidationDefinition } from "../createValidationDefinition"
@@ -69,14 +70,12 @@ export class ArraySchema extends Schema<any[]> {
   protected customValidationBehavior(
     value: any,
     errors: ValidationError[],
-    language?: string,
-    fallbackLanguage?: string
+    options: ValidationOptions
   ): ValidationError[] {
     const arrayValuesErrors = validateArrayValues(
       value,
       this.valuesSchema,
-      language,
-      fallbackLanguage
+      options
     )
 
     return [...errors, ...arrayValuesErrors]
@@ -85,14 +84,12 @@ export class ArraySchema extends Schema<any[]> {
   protected async customValidationBehaviorAsync(
     value: any,
     errors: ValidationError[],
-    language?: string,
-    fallbackLanguage?: string
+    options: ValidationOptions
   ): Promise<ValidationError[]> {
     const arrayValuesErrors = await validateArrayValuesAsync(
       value,
       this.valuesSchema,
-      language,
-      fallbackLanguage
+      options
     )
 
     return [...errors, ...arrayValuesErrors]

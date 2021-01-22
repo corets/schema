@@ -1,13 +1,17 @@
 import { difference, keys } from "lodash-es"
-import { ObjectShape, ValidationError, ValidationSchema } from "./types"
+import {
+  ObjectShape,
+  ValidationError,
+  ValidationOptions,
+  ValidationSchema,
+} from "./types"
 import { joinPath } from "./helpers"
 
 export const validateObjectUnknownKeysAsync = async (
   value: any,
   objectShape: ObjectShape<any> | undefined,
   unknownKeysSchema: ValidationSchema | undefined,
-  language?: string,
-  fallbackLanguage?: string
+  options: ValidationOptions
 ): Promise<ValidationError[]> => {
   if (!unknownKeysSchema) return []
 
@@ -16,10 +20,9 @@ export const validateObjectUnknownKeysAsync = async (
 
   await Promise.all(
     unknownKeys.map(async (unknownKey) => {
-      const newErrors = await unknownKeysSchema.validateAsync(
+      const newErrors = await unknownKeysSchema.validateAsyncWithRawErrors(
         unknownKey,
-        language,
-        fallbackLanguage
+        options
       )
 
       if (newErrors) {

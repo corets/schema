@@ -17,18 +17,18 @@ describe("NumberSchema", () => {
     expect(await s1.testAsync(1)).toBe(true)
     expect(await s2.testAsync(1)).toBe(true)
 
-    const errors1 = (await s1.validateAsync(null))!
+    const errors1 = (await s1.validateAsyncWithRawErrors(null))!
 
     expect(errors1.length).toBe(1)
     expect(errors1[0].message).toBe(translateMessage("number_required"))
 
-    const errors2 = (await s1.validateAsync("1"))!
+    const errors2 = (await s1.validateAsyncWithRawErrors("1"))!
 
     expect(errors2.length).toBe(2)
     expect(errors2[0].message).toBe(translateMessage("number_type"))
     expect(errors2[1].message).toBe(translateMessage("number_required"))
 
-    expect(await s1.validateAsync(1)).toBe(undefined)
+    expect(await s1.validateAsyncWithRawErrors(1)).toBe(undefined)
 
     expect(number().required(false).test(undefined)).toBe(true)
     expect(
@@ -51,12 +51,12 @@ describe("NumberSchema", () => {
     expect(await s.testAsync("")).toBe(false)
     expect(await s.testAsync(1)).toBe(true)
 
-    const errors1 = (await s.validateAsync("1"))!
+    const errors1 = (await s.validateAsyncWithRawErrors("1"))!
 
     expect(errors1.length).toBe(1)
     expect(errors1[0].message).toBe(translateMessage("number_type"))
-    expect(await s.validateAsync(1)).toBe(undefined)
-    expect(await s.validateAsync(null)).toBe(undefined)
+    expect(await s.validateAsyncWithRawErrors(1)).toBe(undefined)
+    expect(await s.validateAsyncWithRawErrors(null)).toBe(undefined)
   })
 
   test("equals", async () => {
@@ -68,10 +68,10 @@ describe("NumberSchema", () => {
     expect(await s1.testAsync(3.2)).toBe(false)
     expect(await s1.testAsync(equals)).toBe(true)
 
-    expect((await s1.validateAsync(2))![0].message).toBe(
+    expect((await s1.validateAsyncWithRawErrors(2))![0].message).toBe(
       translateMessage("number_equals", [equals])
     )
-    expect(await s1.validateAsync(equals)).toBe(undefined)
+    expect(await s1.validateAsyncWithRawErrors(equals)).toBe(undefined)
 
     const s2 = number().equals(() => equals)
 
@@ -86,10 +86,10 @@ describe("NumberSchema", () => {
     expect(await s1.testAsync(3)).toBe(true)
     expect(await s1.testAsync(4)).toBe(true)
 
-    expect((await s1.validateAsync(2))![0].message).toBe(
+    expect((await s1.validateAsyncWithRawErrors(2))![0].message).toBe(
       translateMessage("number_min", [min])
     )
-    expect(await s1.validateAsync(min)).toBe(undefined)
+    expect(await s1.validateAsyncWithRawErrors(min)).toBe(undefined)
 
     const s2 = number().min(() => min)
 
@@ -104,10 +104,10 @@ describe("NumberSchema", () => {
     expect(await s1.testAsync(3)).toBe(true)
     expect(await s1.testAsync(2)).toBe(true)
 
-    expect((await s1.validateAsync(4))![0].message).toBe(
+    expect((await s1.validateAsyncWithRawErrors(4))![0].message).toBe(
       translateMessage("number_max", [max])
     )
-    expect(await s1.validateAsync(max)).toBe(undefined)
+    expect(await s1.validateAsyncWithRawErrors(max)).toBe(undefined)
 
     const s2 = number().max(() => max)
 
@@ -125,10 +125,10 @@ describe("NumberSchema", () => {
     expect(await s1.testAsync(4)).toBe(true)
     expect(await s1.testAsync(5)).toBe(true)
 
-    expect((await s1.validateAsync(2))![0].message).toBe(
+    expect((await s1.validateAsyncWithRawErrors(2))![0].message).toBe(
       translateMessage("number_between", [min, max])
     )
-    expect(await s1.validateAsync(3)).toBe(undefined)
+    expect(await s1.validateAsyncWithRawErrors(3)).toBe(undefined)
 
     const s2 = number().between(
       () => min,
@@ -145,10 +145,10 @@ describe("NumberSchema", () => {
     expect(await s.testAsync(0)).toBe(true)
     expect(await s.testAsync(1)).toBe(true)
 
-    expect((await s.validateAsync(-1))![0].message).toBe(
+    expect((await s.validateAsyncWithRawErrors(-1))![0].message).toBe(
       translateMessage("number_positive")
     )
-    expect(await s.validateAsync(1)).toBe(undefined)
+    expect(await s.validateAsyncWithRawErrors(1)).toBe(undefined)
   })
 
   test("negative", async () => {
@@ -158,10 +158,10 @@ describe("NumberSchema", () => {
     expect(await s.testAsync(0)).toBe(true)
     expect(await s.testAsync(-1)).toBe(true)
 
-    expect((await s.validateAsync(1))![0].message).toBe(
+    expect((await s.validateAsyncWithRawErrors(1))![0].message).toBe(
       translateMessage("number_negative")
     )
-    expect(await s.validateAsync(-1)).toBe(undefined)
+    expect(await s.validateAsyncWithRawErrors(-1)).toBe(undefined)
   })
 
   test("integer", async () => {
@@ -170,10 +170,10 @@ describe("NumberSchema", () => {
     expect(await s.testAsync(1.2)).toBe(false)
     expect(await s.testAsync(1)).toBe(true)
 
-    expect((await s.validateAsync(1.2))![0].message).toBe(
+    expect((await s.validateAsyncWithRawErrors(1.2))![0].message).toBe(
       translateMessage("number_integer")
     )
-    expect(await s.validateAsync(1)).toBe(undefined)
+    expect(await s.validateAsyncWithRawErrors(1)).toBe(undefined)
   })
 
   ////////////////////////////////////////////////////////////////////////////////

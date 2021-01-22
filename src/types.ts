@@ -16,13 +16,19 @@ export interface ValidationSchema<TValue = any> {
   testAsync(value: any): Promise<boolean>
   validate(
     value: any,
-    language?: string,
-    fallbackLanguage?: string
+    options?: Partial<ValidationOptions>
+  ): ValidationResult | undefined
+  validateWithRawErrors(
+    value: any,
+    options?: Partial<ValidationOptions>
   ): ValidationError[] | undefined
   validateAsync(
     value: any,
-    language?: string,
-    fallbackLanguage?: string
+    options?: ValidationOptions
+  ): Promise<ValidationResult | undefined>
+  validateAsyncWithRawErrors(
+    value: any,
+    options?: ValidationOptions
   ): Promise<ValidationError[] | undefined>
   sanitize<TValue, TSanitizedValue = TValue>(value: TValue): TSanitizedValue
   sanitizeAsync<TValue, TSanitizedValue = TValue>(
@@ -36,14 +42,25 @@ export interface ValidationSchema<TValue = any> {
   ): Promise<[boolean, TValue]>
   sanitizeAndValidate<TValue, TSanitizedValue = TValue>(
     value: any,
-    language?: string,
-    fallbackLanguage?: string
+    options?: ValidationOptions
+  ): [ValidationResult | undefined, TValue]
+  sanitizeAndValidateWithRawErrors<TValue, TSanitizedValue = TValue>(
+    value: any,
+    options?: ValidationOptions
   ): [ValidationError[] | undefined, TValue]
   sanitizeAndValidateAsync<TValue, TSanitizedValue = TValue>(
     value: any,
-    language?: string,
-    fallbackLanguage?: string
+    options?: ValidationOptions
+  ): Promise<[ValidationResult | undefined, TValue]>
+  sanitizeAndValidateAsyncWithRawErrors<TValue, TSanitizedValue = TValue>(
+    value: any,
+    options?: ValidationOptions
   ): Promise<[ValidationError[] | undefined, TValue]>
+}
+
+export type ValidationOptions = {
+  language?: string
+  fallbackLanguage?: string
 }
 
 export type LazyValue<TValue> = TValue | (() => TValue) | undefined

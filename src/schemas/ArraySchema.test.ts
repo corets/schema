@@ -21,28 +21,39 @@ describe("ArraySchema", () => {
     expect(await s1.testAsync([])).toBe(true)
     expect(await s2.testAsync([])).toBe(true)
 
-    const errors1 = (await s1.validateAsync(null))!
+    const errors1 = (await s1.validateAsyncWithRawErrors(null))!
 
     expect(errors1.length).toBe(1)
     expect(errors1[0].message).toBe(translateMessage("array_required"))
 
-    const errors2 = (await s1.validateAsync("array"))!
+    const errors2 = (await s1.validateAsyncWithRawErrors("array"))!
 
     expect(errors2.length).toBe(2)
     expect(errors2[0].message).toBe(translateMessage("array_type"))
     expect(errors2[1].message).toBe(translateMessage("array_required"))
 
-    expect(await s1.validateAsync([])).toBe(undefined)
+    expect(await s1.validateAsyncWithRawErrors([])).toBe(undefined)
   })
 
   test("translates into another language", async () => {
     const s = array().required().someOf(["foo"])
 
-    const errors1 = s.validate(null, "de")!
-    const errors2 = (await s.validateAsync(null, "de"))!
-    const errors3 = (await s.validateAsync(null, "xx", "de"))!
-    const errors4 = s.validate(["bar"], "xx", "de")!
-    const errors5 = (await s.validateAsync(["bar"], "xx", "de"))!
+    const errors1 = s.validateWithRawErrors(null, { language: "de" })!
+    const errors2 = (await s.validateAsyncWithRawErrors(null, {
+      language: "de",
+    }))!
+    const errors3 = (await s.validateAsyncWithRawErrors(null, {
+      language: "xx",
+      fallbackLanguage: "de",
+    }))!
+    const errors4 = s.validateWithRawErrors(["bar"], {
+      language: "xx",
+      fallbackLanguage: "de",
+    })!
+    const errors5 = (await s.validateAsyncWithRawErrors(["bar"], {
+      language: "xx",
+      fallbackLanguage: "de",
+    }))!
 
     expect(errors1.length).toBe(1)
     expect(errors1[0].message).toBe("Erforderlich")
@@ -81,13 +92,13 @@ describe("ArraySchema", () => {
     expect(await s.testAsync(1)).toBe(false)
     expect(await s.testAsync([])).toBe(true)
 
-    const errors1 = (await s.validateAsync("a"))!
+    const errors1 = (await s.validateAsyncWithRawErrors("a"))!
 
     expect(errors1.length).toBe(1)
     expect(errors1[0].message).toBe(translateMessage("array_type"))
 
-    expect(await s.validateAsync([])).toBe(undefined)
-    expect(await s.validateAsync(null)).toBe(undefined)
+    expect(await s.validateAsyncWithRawErrors([])).toBe(undefined)
+    expect(await s.validateAsyncWithRawErrors(null)).toBe(undefined)
   })
 
   test("equals", async () => {
@@ -98,10 +109,10 @@ describe("ArraySchema", () => {
     expect(await s1.testAsync([2, 1])).toBe(true)
     expect(await s1.testAsync(arg)).toBe(true)
 
-    expect((await s1.validateAsync([]))![0].message).toBe(
+    expect((await s1.validateAsyncWithRawErrors([]))![0].message).toBe(
       translateMessage("array_equals", [arg])
     )
-    expect(await s1.validateAsync(arg)).toBe(undefined)
+    expect(await s1.validateAsyncWithRawErrors(arg)).toBe(undefined)
 
     const s2 = array().equals(() => arg)
 
@@ -116,10 +127,10 @@ describe("ArraySchema", () => {
     expect(await s1.testAsync([1, 2, 3, 4])).toBe(false)
     expect(await s1.testAsync([1, 2, 3])).toBe(true)
 
-    expect((await s1.validateAsync([]))![0].message).toBe(
+    expect((await s1.validateAsyncWithRawErrors([]))![0].message).toBe(
       translateMessage("array_length", [arg])
     )
-    expect(await s1.validateAsync([1, 2, 3])).toBe(undefined)
+    expect(await s1.validateAsyncWithRawErrors([1, 2, 3])).toBe(undefined)
 
     const s2 = array().length(() => arg)
 
@@ -133,10 +144,10 @@ describe("ArraySchema", () => {
     expect(await s1.testAsync([1])).toBe(false)
     expect(await s1.testAsync([1, 2])).toBe(true)
 
-    expect((await s1.validateAsync([]))![0].message).toBe(
+    expect((await s1.validateAsyncWithRawErrors([]))![0].message).toBe(
       translateMessage("array_min", [arg])
     )
-    expect(await s1.validateAsync([1, 2])).toBe(undefined)
+    expect(await s1.validateAsyncWithRawErrors([1, 2])).toBe(undefined)
 
     const s2 = array().min(() => arg)
 
@@ -151,10 +162,10 @@ describe("ArraySchema", () => {
     expect(await s1.testAsync([1, 2])).toBe(true)
     expect(await s1.testAsync([1])).toBe(true)
 
-    expect((await s1.validateAsync([1, 2, 3]))![0].message).toBe(
+    expect((await s1.validateAsyncWithRawErrors([1, 2, 3]))![0].message).toBe(
       translateMessage("array_max", [arg])
     )
-    expect(await s1.validateAsync([1, 2])).toBe(undefined)
+    expect(await s1.validateAsyncWithRawErrors([1, 2])).toBe(undefined)
 
     const s2 = array().max(() => arg)
 
@@ -173,10 +184,10 @@ describe("ArraySchema", () => {
     expect(await s1.testAsync([1, 2, 3, 4, 5])).toBe(true)
     expect(await s1.testAsync([1, 2, 3, 4, 5, 6])).toBe(false)
 
-    expect((await s1.validateAsync([1]))![0].message).toBe(
+    expect((await s1.validateAsyncWithRawErrors([1]))![0].message).toBe(
       translateMessage("array_between", [arg1, arg2])
     )
-    expect(await s1.validateAsync([1, 2, 3])).toBe(undefined)
+    expect(await s1.validateAsyncWithRawErrors([1, 2, 3])).toBe(undefined)
 
     const s2 = array().between(
       () => arg1,
@@ -195,10 +206,10 @@ describe("ArraySchema", () => {
     expect(await s1.testAsync([3, 4, 5])).toBe(false)
     expect(await s1.testAsync([1, 4, 5])).toBe(true)
 
-    expect((await s1.validateAsync([2]))![0].message).toBe(
+    expect((await s1.validateAsyncWithRawErrors([2]))![0].message).toBe(
       translateMessage("array_none_of", [JSON.stringify(arg)])
     )
-    expect(await s1.validateAsync([1])).toBe(undefined)
+    expect(await s1.validateAsyncWithRawErrors([1])).toBe(undefined)
 
     const s2 = array().noneOf(() => arg)
 
@@ -216,10 +227,10 @@ describe("ArraySchema", () => {
     expect(await s1.testAsync([3])).toBe(true)
     expect(await s1.testAsync([2, 3])).toBe(true)
 
-    expect((await s1.validateAsync([1]))![0].message).toBe(
+    expect((await s1.validateAsyncWithRawErrors([1]))![0].message).toBe(
       translateMessage("array_some_of", [JSON.stringify(arg)])
     )
-    expect(await s1.validateAsync([2])).toBe(undefined)
+    expect(await s1.validateAsyncWithRawErrors([2])).toBe(undefined)
 
     const s2 = array().someOf(() => arg)
 
@@ -275,7 +286,7 @@ describe("ArraySchema", () => {
     expect(s.test([1, 2])).toBe(true)
     expect(s.test(true)).toBe(true)
 
-    const errors = s.validate([])!
+    const errors = s.validateWithRawErrors([])!
 
     expect(errors.length).toBe(4)
     expect(errors[0].message).toBe(translateMessage("array_min", [2]))
@@ -287,9 +298,9 @@ describe("ArraySchema", () => {
     expect(errors[3].message).toBe(translateMessage("boolean_required"))
     expect(errors[3].link).toBe("or.or")
 
-    expect(s.validate([1])).toBe(undefined)
-    expect(s.validate([1, 2])).toBe(undefined)
-    expect(s.validate(true)).toBe(undefined)
+    expect(s.validateWithRawErrors([1])).toBe(undefined)
+    expect(s.validateWithRawErrors([1, 2])).toBe(undefined)
+    expect(s.validateWithRawErrors(true)).toBe(undefined)
   })
 
   test("async or", async () => {
@@ -299,7 +310,7 @@ describe("ArraySchema", () => {
     expect(await s.testAsync([1, 2])).toBe(true)
     expect(await s.testAsync(true)).toBe(true)
 
-    const errors = (await s.validateAsync([]))!
+    const errors = (await s.validateAsyncWithRawErrors([]))!
 
     expect(errors.length).toBe(4)
     expect(errors[0].message).toBe(translateMessage("array_min", [2]))
@@ -311,9 +322,9 @@ describe("ArraySchema", () => {
     expect(errors[3].message).toBe(translateMessage("boolean_required"))
     expect(errors[3].link).toBe("or.or")
 
-    expect(await s.validateAsync([1])).toBe(undefined)
-    expect(await s.validateAsync([1, 2])).toBe(undefined)
-    expect(await s.validateAsync(true)).toBe(undefined)
+    expect(await s.validateAsyncWithRawErrors([1])).toBe(undefined)
+    expect(await s.validateAsyncWithRawErrors([1, 2])).toBe(undefined)
+    expect(await s.validateAsyncWithRawErrors(true)).toBe(undefined)
   })
 
   test("and", () => {
@@ -325,24 +336,24 @@ describe("ArraySchema", () => {
     expect(s.test(["yolo"])).toBe(false)
     expect(s.test(["foo", "bar", "foo"])).toBe(true)
 
-    const errors1 = s.validate(["yolo"])!
+    const errors1 = s.validateWithRawErrors(["yolo"])!
 
     expect(errors1.length).toBe(1)
     expect(errors1[0].message).toBe(translateMessage("array_min", [2]))
 
-    const errors2 = s.validate(["yolo", "foo"])!
+    const errors2 = s.validateWithRawErrors(["yolo", "foo"])!
 
     expect(errors2.length).toBe(1)
     expect(errors2[0].message).toBe(translateMessage("array_some_of", [someOf]))
     expect(errors2[0].link).toBe("and")
 
-    const errors3 = s.validate(["foo", "bar"])!
+    const errors3 = s.validateWithRawErrors(["foo", "bar"])!
 
     expect(errors2.length).toBe(1)
     expect(errors3[0].message).toBe(translateMessage("array_min", [3]))
     expect(errors3[0].link).toBe("and.and")
 
-    expect(s.validate(["foo", "bar", "foo"])).toBe(undefined)
+    expect(s.validateWithRawErrors(["foo", "bar", "foo"])).toBe(undefined)
   })
 
   test("async and", async () => {
@@ -354,19 +365,21 @@ describe("ArraySchema", () => {
     expect(await s.testAsync(["yolo"])).toBe(false)
     expect(await s.testAsync(["foo", "bar", "foo"])).toBe(true)
 
-    const errors1 = (await s.validateAsync(["yolo"]))!
+    const errors1 = (await s.validateAsyncWithRawErrors(["yolo"]))!
 
     expect(errors1.length).toBe(1)
     expect(errors1[0].message).toBe(translateMessage("array_min", [2]))
     expect(errors1[0].link).toBe(undefined)
 
-    const errors2 = (await s.validateAsync(["foo", "bar"]))!
+    const errors2 = (await s.validateAsyncWithRawErrors(["foo", "bar"]))!
 
     expect(errors2.length).toBe(1)
     expect(errors2[0].message).toBe(translateMessage("array_min", [3]))
     expect(errors2[0].link).toBe("and.and")
 
-    expect(await s.validateAsync(["foo", "bar", "foo"])).toBe(undefined)
+    expect(await s.validateAsyncWithRawErrors(["foo", "bar", "foo"])).toBe(
+      undefined
+    )
   })
 
   test("shape", () => {
@@ -383,7 +396,7 @@ describe("ArraySchema", () => {
     expect(s2.test([1, "1"])).toBe(false)
     expect(s2.test([1, false])).toBe(true)
 
-    const errors1 = s2.validate([1, "1", null])!
+    const errors1 = s2.validateWithRawErrors([1, "1", null])!
 
     expect(errors1.length).toBe(6)
     expect(errors1[0].message).toBe(translateMessage("number_type"))
@@ -408,7 +421,7 @@ describe("ArraySchema", () => {
     expect(errors1[5].path).toBe("2")
     expect(errors1[5].link).toBe("or")
 
-    const errors2 = s2.validate([1, "1", true])!
+    const errors2 = s2.validateWithRawErrors([1, "1", true])!
 
     expect(errors2.length).toBe(7)
     expect(errors2[0].message).toBe(translateMessage("number_type"))
@@ -436,15 +449,15 @@ describe("ArraySchema", () => {
     expect(errors2[6].path).toBe("2")
     expect(errors2[6].link).toBe("or.and")
 
-    const errors3 = s2.validate([false])!
+    const errors3 = s2.validateWithRawErrors([false])!
     expect(errors3.length).toBe(1)
     expect(errors3[0].message).toBe(translateMessage("array_min", [2]))
     expect(errors3[0].path).toBe(undefined)
     expect(errors3[0].link).toBe(undefined)
 
-    expect(s2.validate([2, false])).toBe(undefined)
-    expect(s2.validate([2, 2])).toBe(undefined)
-    expect(s2.validate([false, false])).toBe(undefined)
+    expect(s2.validateWithRawErrors([2, false])).toBe(undefined)
+    expect(s2.validateWithRawErrors([2, 2])).toBe(undefined)
+    expect(s2.validateWithRawErrors([false, false])).toBe(undefined)
   })
 
   test("async shape", async () => {
@@ -461,7 +474,7 @@ describe("ArraySchema", () => {
     expect(await s2.testAsync([1, "1"])).toBe(false)
     expect(await s2.testAsync([1, false])).toBe(true)
 
-    const errors1 = (await s2.validateAsync([1, "1", null]))!
+    const errors1 = (await s2.validateAsyncWithRawErrors([1, "1", null]))!
 
     expect(errors1.length).toBe(6)
     expect(errors1[0].message).toBe(translateMessage("number_type"))
@@ -485,7 +498,7 @@ describe("ArraySchema", () => {
     expect(errors1[5].path).toBe("2")
     expect(errors1[5].link).toBe("or")
 
-    const errors2 = (await s2.validateAsync([1, "1", true]))!
+    const errors2 = (await s2.validateAsyncWithRawErrors([1, "1", true]))!
 
     expect(errors2.length).toBe(7)
     expect(errors2[0].message).toBe(translateMessage("number_type"))
@@ -513,15 +526,15 @@ describe("ArraySchema", () => {
     expect(errors2[6].path).toBe("2")
     expect(errors2[6].link).toBe("or.and")
 
-    const errors3 = (await s2.validateAsync([false]))!
+    const errors3 = (await s2.validateAsyncWithRawErrors([false]))!
     expect(errors3.length).toBe(1)
     expect(errors3[0].message).toBe(translateMessage("array_min", [2]))
     expect(errors3[0].path).toBe(undefined)
     expect(errors3[0].link).toBe(undefined)
 
-    expect(await s2.validateAsync([2, false])).toBe(undefined)
-    expect(await s2.validateAsync([2, 2])).toBe(undefined)
-    expect(await s2.validateAsync([false, false])).toBe(undefined)
+    expect(await s2.validateAsyncWithRawErrors([2, false])).toBe(undefined)
+    expect(await s2.validateAsyncWithRawErrors([2, 2])).toBe(undefined)
+    expect(await s2.validateAsyncWithRawErrors([false, false])).toBe(undefined)
 
     expect(array().required(false).test(undefined)).toBe(true)
     expect(
@@ -542,13 +555,13 @@ describe("ArraySchema", () => {
     expect(s.sanitize([" 12 ", "    34   "])).toEqual(["12", "34"])
   })
 
-  test("sanitizeAsync", async () => {
+  test("sanitize async", async () => {
     const s = array().shape(string().length(2).toTrimmed())
 
     expect(await s.sanitizeAsync([" 12 ", "    34   "])).toEqual(["12", "34"])
   })
 
-  test("sanitizeAndTest", () => {
+  test("sanitize and test", () => {
     const s = array().shape(string().length(2).toTrimmed())
 
     expect(s.sanitizeAndTest([" 12 ", "    34   "])).toEqual([
@@ -557,7 +570,7 @@ describe("ArraySchema", () => {
     ])
   })
 
-  test("sanitizeAndTestAsync", async () => {
+  test("sanitize and test async", async () => {
     const s = array().shape(string().length(2).toTrimmed())
 
     expect(await s.sanitizeAndTestAsync([" 12 ", "    34   "])).toEqual([
@@ -566,42 +579,49 @@ describe("ArraySchema", () => {
     ])
   })
 
+  test("validate with raw errors", () => {
+    const s = array().min(2)
+    const errors = s.validateWithRawErrors([1])!
+
+    expect(errors.length).toBe(1)
+    expect(errors[0].message).toBe(translateMessage("array_min", [2]))
+
+    expect(s.validateWithRawErrors([1, 2])).toBe(undefined)
+  })
+
   test("validate", () => {
     const s = array().min(2)
     const errors = s.validate([1])!
 
-    expect(errors.length).toBe(1)
-    expect(errors[0].message).toBe(translateMessage("array_min", [2]))
+    expect(!!errors).toBe(true)
+    expect(errors.self[0]).toBe(translateMessage("array_min", [2]))
 
     expect(s.validate([1, 2])).toBe(undefined)
   })
 
-  test("validateAsync", async () => {
+  test("validate async with raw errors", async () => {
     const s = array().min(2)
-    const errors = (await s.validateAsync([1]))!
+    const errors = (await s.validateAsyncWithRawErrors([1]))!
 
     expect(errors.length).toBe(1)
     expect(errors[0].message).toBe(translateMessage("array_min", [2]))
 
+    expect(await s.validateAsyncWithRawErrors([1, 2])).toBe(undefined)
+  })
+
+  test("validate async", async () => {
+    const s = array().min(2)
+    const errors = (await s.validateAsync([1]))!
+
+    expect(!!errors).toBe(true)
+    expect(errors.self[0]).toBe(translateMessage("array_min", [2]))
+
     expect(await s.validateAsync([1, 2])).toBe(undefined)
   })
 
-  test("sanitizeAndValidate", () => {
+  test("sanitize and validate with raw errors", () => {
     const s = array().length(2).toCompact()
-    const [errors1, value1] = s.sanitizeAndValidate([1, null, undefined])
-
-    expect(errors1!.length).toBe(1)
-    expect(errors1![0].message).toBe(translateMessage("array_length", [2]))
-    expect(value1).toEqual([1])
-
-    const [errors2, value2] = s.sanitizeAndValidate([1, 2, null, undefined])
-    expect(errors2).toBe(undefined)
-    expect(value2).toEqual([1, 2])
-  })
-
-  test("sanitizeAndValidateAsync", async () => {
-    const s = array().length(2).toCompact()
-    const [errors1, value1] = await s.sanitizeAndValidateAsync([
+    const [errors1, value1] = s.sanitizeAndValidateWithRawErrors([
       1,
       null,
       undefined,
@@ -609,6 +629,63 @@ describe("ArraySchema", () => {
 
     expect(errors1!.length).toBe(1)
     expect(errors1![0].message).toBe(translateMessage("array_length", [2]))
+    expect(value1).toEqual([1])
+
+    const [errors2, value2] = s.sanitizeAndValidateWithRawErrors([
+      1,
+      2,
+      null,
+      undefined,
+    ])
+    expect(errors2).toBe(undefined)
+    expect(value2).toEqual([1, 2])
+  })
+
+  test("sanitize and validate", () => {
+    const s = array().length(2).toCompact()
+    const [errors1, value1] = s.sanitizeAndValidate([1, null, undefined])
+
+    expect(!!errors1).toBe(true)
+    expect(errors1!.self[0]).toBe(translateMessage("array_length", [2]))
+    expect(value1).toEqual([1])
+
+    const [errors2, value2] = s.sanitizeAndValidate([1, 2, null, undefined])
+    expect(errors2).toBe(undefined)
+    expect(value2).toEqual([1, 2])
+  })
+
+  test("sanitize ans validate async with raw errors", async () => {
+    const s = array().length(2).toCompact()
+    const [errors1, value1] = await s.sanitizeAndValidateAsyncWithRawErrors([
+      1,
+      null,
+      undefined,
+    ])
+
+    expect(errors1!.length).toBe(1)
+    expect(errors1![0].message).toBe(translateMessage("array_length", [2]))
+    expect(value1).toEqual([1])
+
+    const [errors2, value2] = await s.sanitizeAndValidateAsyncWithRawErrors([
+      1,
+      2,
+      null,
+      undefined,
+    ])
+    expect(errors2).toBe(undefined)
+    expect(value2).toEqual([1, 2])
+  })
+
+  test("sanitize ans validate async", async () => {
+    const s = array().length(2).toCompact()
+    const [errors1, value1] = await s.sanitizeAndValidateAsync([
+      1,
+      null,
+      undefined,
+    ])
+
+    expect(!!errors1).toBe(true)
+    expect(errors1!.self[0]).toBe(translateMessage("array_length", [2]))
     expect(value1).toEqual([1])
 
     const [errors2, value2] = await s.sanitizeAndValidateAsync([

@@ -23,6 +23,7 @@ import {
   LazyValue,
   ObjectShape,
   ValidationError,
+  ValidationOptions,
 } from "../types"
 import { createValidationDefinition } from "../createValidationDefinition"
 import { createSanitizerDefinition } from "../createSanitizerDefinition"
@@ -109,41 +110,35 @@ export class ObjectSchema<TValue extends object> extends Schema<TValue> {
   protected customValidationBehavior(
     value: any,
     errors: ValidationError[],
-    language?: string,
-    fallbackLanguage?: string
+    options: ValidationOptions
   ): ValidationError[] {
     const hasUnknownKeysErrors = validateObjectHasUnknownKeys(
       value,
       this.objectShape,
       this.allowUnknownKeysAndValues,
-      language,
-      fallbackLanguage
+      options
     )
     const isMissingKeysErrors = validateObjectIsMissingKeys(
       value,
       this.objectShape,
-      language,
-      fallbackLanguage
+      options
     )
     const unknownKeysErrors = validateObjectUnknownKeys(
       value,
       this.objectShape,
       this.unknownKeysSchema,
-      language,
-      fallbackLanguage
+      options
     )
     const unknownValueErrors = validateObjectUnknownValues(
       value,
       this.objectShape,
       this.unknownValuesSchema,
-      language,
-      fallbackLanguage
+      options
     )
     const validateShapeErrors = validateObjectShape(
       value,
       this.objectShape,
-      language,
-      fallbackLanguage
+      options
     )
 
     return [
@@ -159,41 +154,35 @@ export class ObjectSchema<TValue extends object> extends Schema<TValue> {
   protected async customValidationBehaviorAsync(
     value: any,
     errors: ValidationError[],
-    language?: string,
-    fallbackLanguage?: string
+    options: ValidationOptions
   ): Promise<ValidationError[]> {
     const hasUnknownKeysErrors = validateObjectHasUnknownKeys(
       value,
       this.objectShape,
       this.allowUnknownKeysAndValues,
-      language,
-      fallbackLanguage
+      options
     )
     const isMissingKeysErrors = validateObjectIsMissingKeys(
       value,
       this.objectShape,
-      language,
-      fallbackLanguage
+      options
     )
     const unknownKeysErrors = await validateObjectUnknownKeysAsync(
       value,
       this.objectShape,
       this.unknownKeysSchema,
-      language,
-      fallbackLanguage
+      options
     )
     const unknownValueErrors = await validateObjectUnknownValuesAsync(
       value,
       this.objectShape,
       this.unknownValuesSchema,
-      language,
-      fallbackLanguage
+      options
     )
     const validateShapeErrors = await validateObjectShapeAsync(
       value,
       this.objectShape,
-      language,
-      fallbackLanguage
+      options
     )
 
     return [

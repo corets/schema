@@ -17,18 +17,18 @@ describe("DateSchema", () => {
     expect(await s2.testAsync(new Date())).toBe(true)
     expect(await s1.testAsync(new Date())).toBe(true)
 
-    const errors1 = (await s1.validateAsync(null))!
+    const errors1 = (await s1.validateAsyncWithRawErrors(null))!
 
     expect(errors1.length).toBe(1)
     expect(errors1[0].message).toBe(translateMessage("date_required"))
 
-    const errors2 = (await s1.validateAsync("date"))!
+    const errors2 = (await s1.validateAsyncWithRawErrors("date"))!
 
     expect(errors2.length).toBe(2)
     expect(errors2[0].message).toBe(translateMessage("date_type"))
     expect(errors2[1].message).toBe(translateMessage("date_required"))
 
-    expect(await s2.validateAsync(new Date())).toBe(undefined)
+    expect(await s2.validateAsyncWithRawErrors(new Date())).toBe(undefined)
 
     expect(date().required(false).test(undefined)).toBe(true)
     expect(
@@ -51,13 +51,13 @@ describe("DateSchema", () => {
     expect(await s.testAsync(1)).toBe(false)
     expect(await s.testAsync(new Date())).toBe(true)
 
-    const errors1 = (await s.validateAsync("-"))!
+    const errors1 = (await s.validateAsyncWithRawErrors("-"))!
 
     expect(errors1.length).toBe(1)
     expect(errors1[0].message).toBe(translateMessage("date_type"))
 
-    expect(await s.validateAsync(new Date())).toBe(undefined)
-    expect(await s.validateAsync(null)).toBe(undefined)
+    expect(await s.validateAsyncWithRawErrors(new Date())).toBe(undefined)
+    expect(await s.validateAsyncWithRawErrors(null)).toBe(undefined)
   })
 
   test("equals", async () => {
@@ -69,10 +69,10 @@ describe("DateSchema", () => {
     expect(await s1.testAsync(new Date(2019, 7, 4))).toBe(false)
     expect(await s1.testAsync(new Date(2019, 8, 4))).toBe(true)
 
-    expect((await s1.validateAsync(new Date(2019, 8, 5)))![0].message).toBe(
-      translateMessage("date_equals", [equals])
-    )
-    expect(await s1.validateAsync(equals)).toBe(undefined)
+    expect(
+      (await s1.validateAsyncWithRawErrors(new Date(2019, 8, 5)))![0].message
+    ).toBe(translateMessage("date_equals", [equals]))
+    expect(await s1.validateAsyncWithRawErrors(equals)).toBe(undefined)
 
     const s2 = date().equals(() => equals)
 
@@ -89,12 +89,12 @@ describe("DateSchema", () => {
     expect(await s1.testAsync(new Date(2019, 8, 5))).toBe(true)
     expect(await s1.testAsync(new Date(2019, 9, 4))).toBe(true)
 
-    expect((await s1.validateAsync(new Date(2019, 7, 4)))![0].message).toBe(
-      translateMessage("date_after", [after])
-    )
-    expect(await s1.validateAsync(dayjs(after).add(1, "day").toDate())).toBe(
-      undefined
-    )
+    expect(
+      (await s1.validateAsyncWithRawErrors(new Date(2019, 7, 4)))![0].message
+    ).toBe(translateMessage("date_after", [after]))
+    expect(
+      await s1.validateAsyncWithRawErrors(dayjs(after).add(1, "day").toDate())
+    ).toBe(undefined)
 
     const s2 = date().after(() => after)
     expect(await s2.testAsync(new Date(2019, 9, 4))).toBe(true)
@@ -110,11 +110,13 @@ describe("DateSchema", () => {
     expect(await s1.testAsync(new Date(2019, 8, 3))).toBe(true)
     expect(await s1.testAsync(new Date(2019, 7, 4))).toBe(true)
 
-    expect((await s1.validateAsync(new Date(2019, 8, 4)))![0].message).toBe(
-      translateMessage("date_before", [before])
-    )
     expect(
-      await s1.validateAsync(dayjs(before).subtract(1, "day").toDate())
+      (await s1.validateAsyncWithRawErrors(new Date(2019, 8, 4)))![0].message
+    ).toBe(translateMessage("date_before", [before]))
+    expect(
+      await s1.validateAsyncWithRawErrors(
+        dayjs(before).subtract(1, "day").toDate()
+      )
     ).toBe(undefined)
 
     const s2 = date().before(() => before)
@@ -133,12 +135,12 @@ describe("DateSchema", () => {
     expect(await s1.testAsync(new Date(2019, 8, 5))).toBe(true)
     expect(await s1.testAsync(new Date(2019, 9, 3))).toBe(true)
 
-    expect((await s1.validateAsync(new Date(2019, 7, 4)))![0].message).toBe(
-      translateMessage("date_between", [after, before])
-    )
-    expect(await s1.validateAsync(dayjs(after).add(1, "day").toDate())).toBe(
-      undefined
-    )
+    expect(
+      (await s1.validateAsyncWithRawErrors(new Date(2019, 7, 4)))![0].message
+    ).toBe(translateMessage("date_between", [after, before]))
+    expect(
+      await s1.validateAsyncWithRawErrors(dayjs(after).add(1, "day").toDate())
+    ).toBe(undefined)
 
     const s2 = date().between(
       () => after,

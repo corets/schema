@@ -20,19 +20,19 @@ describe("StringSchema", () => {
     expect(await s1.testAsync("1")).toBe(true)
     expect(await s2.testAsync("1")).toBe(true)
 
-    const errors1 = (await s1.validateAsync(null))!
+    const errors1 = (await s1.validateAsyncWithRawErrors(null))!
     expect(errors1.length).toBe(1)
     expect(errors1[0].message).toBe(translateMessage("string_required"))
     expect(errors1[0].value).toBe(null)
 
-    const errors2 = (await s1.validateAsync(1))!
+    const errors2 = (await s1.validateAsyncWithRawErrors(1))!
     expect(errors2.length).toBe(2)
     expect(errors2[0].message).toBe(translateMessage("string_type"))
     expect(errors2[0].value).toBe(1)
     expect(errors2[1].message).toBe(translateMessage("string_required"))
     expect(errors2[1].value).toBe(1)
 
-    expect(await s1.validateAsync("1")).toBe(undefined)
+    expect(await s1.validateAsyncWithRawErrors("1")).toBe(undefined)
 
     expect(string().required(false).test(undefined)).toBe(true)
     expect(
@@ -50,9 +50,14 @@ describe("StringSchema", () => {
   test("translates into another language", async () => {
     const s = string().required()
 
-    const errors1 = s.validate(null, "de")!
-    const errors2 = (await s.validateAsync(null, "de"))!
-    const errors3 = (await s.validateAsync(null, "xx", "de"))!
+    const errors1 = s.validateWithRawErrors(null, { language: "de" })!
+    const errors2 = (await s.validateAsyncWithRawErrors(null, {
+      language: "de",
+    }))!
+    const errors3 = (await s.validateAsyncWithRawErrors(null, {
+      language: "xx",
+      fallbackLanguage: "de",
+    }))!
 
     expect(errors1.length).toBe(1)
     expect(errors1[0].message).toBe("Erforderlich")
@@ -81,10 +86,10 @@ describe("StringSchema", () => {
     expect(await s.testAsync(1)).toBe(false)
     expect(await s.testAsync("")).toBe(true)
 
-    const errors = (await s.validateAsync(1))!
+    const errors = (await s.validateAsyncWithRawErrors(1))!
 
     expect(errors[0].message).toBe(translateMessage("string_type"))
-    expect(await s.validateAsync(null)).toBe(undefined)
+    expect(await s.validateAsyncWithRawErrors(null)).toBe(undefined)
   })
 
   test("is immutable", async () => {
@@ -113,10 +118,10 @@ describe("StringSchema", () => {
     expect(await s1.optional().testAsync("abc")).toBe(false)
     expect(await s1.testAsync(arg)).toBe(true)
 
-    expect((await s1.validateAsync("2"))![0].message).toBe(
+    expect((await s1.validateAsyncWithRawErrors("2"))![0].message).toBe(
       translateMessage("string_equals", [arg])
     )
-    expect(await s1.validateAsync(arg)).toBe(undefined)
+    expect(await s1.validateAsyncWithRawErrors(arg)).toBe(undefined)
 
     const s2 = string().equals(() => arg)
 
@@ -133,10 +138,10 @@ describe("StringSchema", () => {
     expect(await s1.optional().testAsync("123")).toBe(false)
     expect(await s1.testAsync("12345")).toBe(true)
 
-    expect((await s1.validateAsync("1"))![0].message).toBe(
+    expect((await s1.validateAsyncWithRawErrors("1"))![0].message).toBe(
       translateMessage("string_length", [arg])
     )
-    expect(await s1.validateAsync("12345")).toBe(undefined)
+    expect(await s1.validateAsyncWithRawErrors("12345")).toBe(undefined)
 
     const s2 = string().length(() => arg)
 
@@ -161,10 +166,10 @@ describe("StringSchema", () => {
     expect(await s1.testAsync("12345")).toBe(true)
     expect(await s1.testAsync("123456")).toBe(true)
 
-    expect((await s1.validateAsync("1"))![0].message).toBe(
+    expect((await s1.validateAsyncWithRawErrors("1"))![0].message).toBe(
       translateMessage("string_min", [arg])
     )
-    expect(await s1.validateAsync("12345")).toBe(undefined)
+    expect(await s1.validateAsyncWithRawErrors("12345")).toBe(undefined)
 
     const s2 = string().min(() => arg)
 
@@ -183,10 +188,10 @@ describe("StringSchema", () => {
     expect(await s1.optional().testAsync("")).toBe(true)
     expect(await s1.testAsync("1")).toBe(true)
 
-    expect((await s1.validateAsync("123456"))![0].message).toBe(
+    expect((await s1.validateAsyncWithRawErrors("123456"))![0].message).toBe(
       translateMessage("string_max", [arg])
     )
-    expect(await s1.validateAsync("12")).toBe(undefined)
+    expect(await s1.validateAsyncWithRawErrors("12")).toBe(undefined)
 
     const s2 = string().max(() => arg)
 
@@ -207,10 +212,10 @@ describe("StringSchema", () => {
     expect(await s1.testAsync("12345")).toBe(true)
     expect(await s1.testAsync("123456")).toBe(false)
 
-    expect((await s1.validateAsync("1"))![0].message).toBe(
+    expect((await s1.validateAsyncWithRawErrors("1"))![0].message).toBe(
       translateMessage("string_between", [arg1, arg2])
     )
-    expect(await s1.validateAsync("1234")).toBe(undefined)
+    expect(await s1.validateAsyncWithRawErrors("1234")).toBe(undefined)
 
     const s2 = string().between(
       () => arg1,
@@ -230,10 +235,10 @@ describe("StringSchema", () => {
     expect(await s.testAsync("some@email")).toBe(false)
     expect(await s.testAsync("some@email.com")).toBe(true)
 
-    expect((await s.validateAsync("a"))![0].message).toBe(
+    expect((await s.validateAsyncWithRawErrors("a"))![0].message).toBe(
       translateMessage("string_email")
     )
-    expect(await s.validateAsync("some@email.com")).toBe(undefined)
+    expect(await s.validateAsyncWithRawErrors("some@email.com")).toBe(undefined)
   })
 
   test("url", async () => {
@@ -246,10 +251,12 @@ describe("StringSchema", () => {
     expect(await s.testAsync("")).toBe(false)
     expect(await s.optional().testAsync("")).toBe(true)
 
-    expect((await s.validateAsync("a"))![0].message).toBe(
+    expect((await s.validateAsyncWithRawErrors("a"))![0].message).toBe(
       translateMessage("string_url")
     )
-    expect(await s.validateAsync("http://google.com")).toBe(undefined)
+    expect(await s.validateAsyncWithRawErrors("http://google.com")).toBe(
+      undefined
+    )
   })
 
   test("startsWith", async () => {
@@ -262,10 +269,10 @@ describe("StringSchema", () => {
     expect(await s1.testAsync("")).toBe(false)
     expect(await s1.optional().testAsync("")).toBe(true)
 
-    expect((await s1.validateAsync("a"))![0].message).toBe(
+    expect((await s1.validateAsyncWithRawErrors("a"))![0].message).toBe(
       translateMessage("string_starts_with", [arg])
     )
-    expect(await s1.validateAsync("red bus")).toBe(undefined)
+    expect(await s1.validateAsyncWithRawErrors("red bus")).toBe(undefined)
 
     const s2 = string().startsWith(() => arg)
 
@@ -282,10 +289,10 @@ describe("StringSchema", () => {
     expect(await s1.testAsync("")).toBe(false)
     expect(await s1.optional().testAsync("")).toBe(true)
 
-    expect((await s1.validateAsync("a"))![0].message).toBe(
+    expect((await s1.validateAsyncWithRawErrors("a"))![0].message).toBe(
       translateMessage("string_ends_with", [arg])
     )
-    expect(await s1.validateAsync("red bus")).toBe(undefined)
+    expect(await s1.validateAsyncWithRawErrors("red bus")).toBe(undefined)
 
     const s2 = string().endsWith(() => arg)
 
@@ -302,10 +309,10 @@ describe("StringSchema", () => {
     expect(await s1.testAsync("")).toBe(false)
     expect(await s1.optional().testAsync("")).toBe(true)
 
-    expect((await s1.validateAsync("a"))![0].message).toBe(
+    expect((await s1.validateAsyncWithRawErrors("a"))![0].message).toBe(
       translateMessage("string_includes", [arg])
     )
-    expect(await s1.validateAsync(arg)).toBe(undefined)
+    expect(await s1.validateAsyncWithRawErrors(arg)).toBe(undefined)
 
     const s2 = string().includes(() => arg)
 
@@ -322,10 +329,10 @@ describe("StringSchema", () => {
     expect(await s1.testAsync("")).toBe(false)
     expect(await s1.optional().testAsync("")).toBe(true)
 
-    expect((await s1.validateAsync(arg))![0].message).toBe(
+    expect((await s1.validateAsyncWithRawErrors(arg))![0].message).toBe(
       translateMessage("string_omits", [arg])
     )
-    expect(await s1.validateAsync("red")).toBe(undefined)
+    expect(await s1.validateAsyncWithRawErrors("red")).toBe(undefined)
 
     const s2 = string().omits(() => arg)
 
@@ -343,10 +350,10 @@ describe("StringSchema", () => {
     expect(await s1.testAsync("")).toBe(false)
     expect(await s1.optional().testAsync("")).toBe(true)
 
-    expect((await s1.validateAsync("car"))![0].message).toBe(
+    expect((await s1.validateAsyncWithRawErrors("car"))![0].message).toBe(
       translateMessage("string_one_of", [arg])
     )
-    expect(await s1.validateAsync("bus")).toBe(undefined)
+    expect(await s1.validateAsyncWithRawErrors("bus")).toBe(undefined)
 
     const s2 = string().oneOf(() => arg)
 
@@ -364,10 +371,10 @@ describe("StringSchema", () => {
     expect(await s1.testAsync("")).toBe(false)
     expect(await s1.optional().testAsync("")).toBe(true)
 
-    expect((await s1.validateAsync("bus"))![0].message).toBe(
+    expect((await s1.validateAsyncWithRawErrors("bus"))![0].message).toBe(
       translateMessage("string_none_of", [arg])
     )
-    expect(await s1.validateAsync("car")).toBe(undefined)
+    expect(await s1.validateAsyncWithRawErrors("car")).toBe(undefined)
 
     const s2 = string().noneOf(() => arg)
 
@@ -384,10 +391,10 @@ describe("StringSchema", () => {
     expect(await s1.testAsync("")).toBe(false)
     expect(await s1.optional().testAsync("")).toBe(true)
 
-    expect((await s1.validateAsync("blue car"))![0].message).toBe(
+    expect((await s1.validateAsyncWithRawErrors("blue car"))![0].message).toBe(
       translateMessage("string_matches", [regex])
     )
-    expect(await s1.validateAsync("red car")).toBe(undefined)
+    expect(await s1.validateAsyncWithRawErrors("red car")).toBe(undefined)
 
     const s2 = string().matches(() => regex)
 
@@ -410,10 +417,10 @@ describe("StringSchema", () => {
     expect(await s.testAsync("1.0")).toBe(true)
     expect(await s.testAsync("111.000")).toBe(true)
 
-    expect((await s.validateAsync("a"))![0].message).toBe(
+    expect((await s.validateAsyncWithRawErrors("a"))![0].message).toBe(
       translateMessage("string_numeric")
     )
-    expect(await s.validateAsync("1")).toBe(undefined)
+    expect(await s.validateAsyncWithRawErrors("1")).toBe(undefined)
   })
 
   test("alpha", async () => {
@@ -427,10 +434,10 @@ describe("StringSchema", () => {
     expect(await s.testAsync("")).toBe(false)
     expect(await s.optional().testAsync("")).toBe(true)
 
-    expect((await s.validateAsync("1"))![0].message).toBe(
+    expect((await s.validateAsyncWithRawErrors("1"))![0].message).toBe(
       translateMessage("string_alpha")
     )
-    expect(await s.validateAsync("a")).toBe(undefined)
+    expect(await s.validateAsyncWithRawErrors("a")).toBe(undefined)
   })
 
   test("alphaNumeric", async () => {
@@ -448,10 +455,10 @@ describe("StringSchema", () => {
     expect(await s.testAsync("")).toBe(false)
     expect(await s.optional().testAsync("")).toBe(true)
 
-    expect((await s.validateAsync("-"))![0].message).toBe(
+    expect((await s.validateAsyncWithRawErrors("-"))![0].message).toBe(
       translateMessage("string_alpha_numeric")
     )
-    expect(await s.validateAsync("1")).toBe(undefined)
+    expect(await s.validateAsyncWithRawErrors("1")).toBe(undefined)
   })
 
   test("alphaDashes", async () => {
@@ -468,10 +475,10 @@ describe("StringSchema", () => {
     expect(await s.testAsync("")).toBe(false)
     expect(await s.optional().testAsync("")).toBe(true)
 
-    expect((await s.validateAsync("_"))![0].message).toBe(
+    expect((await s.validateAsyncWithRawErrors("_"))![0].message).toBe(
       translateMessage("string_alpha_dashes")
     )
-    expect(await s.validateAsync("-")).toBe(undefined)
+    expect(await s.validateAsyncWithRawErrors("-")).toBe(undefined)
   })
 
   test("alphaUnderscores", async () => {
@@ -485,10 +492,10 @@ describe("StringSchema", () => {
     expect(await s.testAsync("A")).toBe(true)
     expect(await s.testAsync("_")).toBe(true)
 
-    expect((await s.validateAsync("-"))![0].message).toBe(
+    expect((await s.validateAsyncWithRawErrors("-"))![0].message).toBe(
       translateMessage("string_alpha_underscores")
     )
-    expect(await s.validateAsync("_")).toBe(undefined)
+    expect(await s.validateAsyncWithRawErrors("_")).toBe(undefined)
   })
 
   test("alphaNumericDashes", async () => {
@@ -505,10 +512,10 @@ describe("StringSchema", () => {
     expect(await s.testAsync("")).toBe(false)
     expect(await s.optional().testAsync("")).toBe(true)
 
-    expect((await s.validateAsync("_"))![0].message).toBe(
+    expect((await s.validateAsyncWithRawErrors("_"))![0].message).toBe(
       translateMessage("string_alpha_numeric_dashes")
     )
-    expect(await s.validateAsync("1")).toBe(undefined)
+    expect(await s.validateAsyncWithRawErrors("1")).toBe(undefined)
   })
 
   test("alphaNumericUnderscores", async () => {
@@ -525,10 +532,10 @@ describe("StringSchema", () => {
     expect(await s.testAsync("")).toBe(false)
     expect(await s.optional().testAsync("")).toBe(true)
 
-    expect((await s.validateAsync("-"))![0].message).toBe(
+    expect((await s.validateAsyncWithRawErrors("-"))![0].message).toBe(
       translateMessage("string_alpha_numeric_underscores")
     )
-    expect(await s.validateAsync("_")).toBe(undefined)
+    expect(await s.validateAsyncWithRawErrors("_")).toBe(undefined)
   })
 
   test("date", async () => {
@@ -545,10 +552,10 @@ describe("StringSchema", () => {
     expect(await s.testAsync("")).toBe(false)
     expect(await s.optional().testAsync("")).toBe(true)
 
-    expect((await s.validateAsync("-"))![0].message).toBe(
+    expect((await s.validateAsyncWithRawErrors("-"))![0].message).toBe(
       translateMessage("string_date")
     )
-    expect(await s.validateAsync("2019-12-12")).toBe(undefined)
+    expect(await s.validateAsyncWithRawErrors("2019-12-12")).toBe(undefined)
   })
 
   test("time", async () => {
@@ -566,10 +573,10 @@ describe("StringSchema", () => {
     expect(await s.testAsync("")).toBe(false)
     expect(await s.optional().testAsync("")).toBe(true)
 
-    expect((await s.validateAsync("-"))![0].message).toBe(
+    expect((await s.validateAsyncWithRawErrors("-"))![0].message).toBe(
       translateMessage("string_time")
     )
-    expect(await s.validateAsync("17:55:41")).toBe(undefined)
+    expect(await s.validateAsyncWithRawErrors("17:55:41")).toBe(undefined)
   })
 
   test("dateTime", async () => {
@@ -586,10 +593,12 @@ describe("StringSchema", () => {
     expect(await s.testAsync("")).toBe(false)
     expect(await s.optional().testAsync("")).toBe(true)
 
-    expect((await s.validateAsync("-"))![0].message).toBe(
+    expect((await s.validateAsyncWithRawErrors("-"))![0].message).toBe(
       translateMessage("string_date_time")
     )
-    expect(await s.validateAsync("2019-12-12T17:55:41")).toBe(undefined)
+    expect(await s.validateAsyncWithRawErrors("2019-12-12T17:55:41")).toBe(
+      undefined
+    )
   })
 
   test("dateBefore", async () => {
@@ -610,11 +619,13 @@ describe("StringSchema", () => {
     expect(await s1.testAsync("")).toBe(false)
     expect(await s1.optional().testAsync("")).toBe(true)
 
-    expect((await s1.validateAsync("-"))![0].message).toBe(
+    expect((await s1.validateAsyncWithRawErrors("-"))![0].message).toBe(
       translateMessage("string_date_before", [before])
     )
     expect(
-      await s1.validateAsync(dayjs(before).subtract(1, "day").toISOString())
+      await s1.validateAsyncWithRawErrors(
+        dayjs(before).subtract(1, "day").toISOString()
+      )
     ).toBe(undefined)
 
     const s2 = string().dateBefore(() => before)
@@ -642,11 +653,13 @@ describe("StringSchema", () => {
     expect(await s1.testAsync("")).toBe(false)
     expect(await s1.optional().testAsync("")).toBe(true)
 
-    expect((await s1.validateAsync("-"))![0].message).toBe(
+    expect((await s1.validateAsyncWithRawErrors("-"))![0].message).toBe(
       translateMessage("string_date_before_or_same", [before])
     )
     expect(
-      await s1.validateAsync(dayjs(before).subtract(1, "day").toISOString())
+      await s1.validateAsyncWithRawErrors(
+        dayjs(before).subtract(1, "day").toISOString()
+      )
     ).toBe(undefined)
 
     const s2 = string().dateBeforeOrSame(() => before)
@@ -672,11 +685,13 @@ describe("StringSchema", () => {
     expect(await s1.testAsync("")).toBe(false)
     expect(await s1.optional().testAsync("")).toBe(true)
 
-    expect((await s1.validateAsync("-"))![0].message).toBe(
+    expect((await s1.validateAsyncWithRawErrors("-"))![0].message).toBe(
       translateMessage("string_date_after", [after])
     )
     expect(
-      await s1.validateAsync(dayjs(after).add(1, "day").toISOString())
+      await s1.validateAsyncWithRawErrors(
+        dayjs(after).add(1, "day").toISOString()
+      )
     ).toBe(undefined)
 
     const s2 = string().dateAfter(() => after)
@@ -702,11 +717,13 @@ describe("StringSchema", () => {
     expect(await s1.testAsync("")).toBe(false)
     expect(await s1.optional().testAsync("")).toBe(true)
 
-    expect((await s1.validateAsync("-"))![0].message).toBe(
+    expect((await s1.validateAsyncWithRawErrors("-"))![0].message).toBe(
       translateMessage("string_date_after_or_same", [after])
     )
     expect(
-      await s1.validateAsync(dayjs(after).add(1, "day").toISOString())
+      await s1.validateAsyncWithRawErrors(
+        dayjs(after).add(1, "day").toISOString()
+      )
     ).toBe(undefined)
 
     const s2 = string().dateAfterOrSame(() => after)
@@ -743,10 +760,12 @@ describe("StringSchema", () => {
     expect(await s1.testAsync("")).toBe(false)
     expect(await s1.optional().testAsync("")).toBe(true)
 
-    expect((await s1.validateAsync("-"))![0].message).toBe(
+    expect((await s1.validateAsyncWithRawErrors("-"))![0].message).toBe(
       translateMessage("string_date_between", [after, before])
     )
-    expect(await s1.validateAsync(now.toISOString())).toBe(undefined)
+    expect(await s1.validateAsyncWithRawErrors(now.toISOString())).toBe(
+      undefined
+    )
 
     const s2 = string().dateBetween(
       () => after,
@@ -783,10 +802,12 @@ describe("StringSchema", () => {
     expect(await s1.testAsync("")).toBe(false)
     expect(await s1.optional().testAsync("")).toBe(true)
 
-    expect((await s1.validateAsync("-"))![0].message).toBe(
+    expect((await s1.validateAsyncWithRawErrors("-"))![0].message).toBe(
       translateMessage("string_date_between_or_same", [after, before])
     )
-    expect(await s1.validateAsync(now.toISOString())).toBe(undefined)
+    expect(await s1.validateAsyncWithRawErrors(now.toISOString())).toBe(
+      undefined
+    )
 
     const s2 = string().dateBetweenOrSame(
       () => after,
@@ -809,10 +830,10 @@ describe("StringSchema", () => {
     expect(await s1.testAsync("")).toBe(false)
     expect(await s1.optional().testAsync("")).toBe(true)
 
-    expect((await s1.validateAsync("-"))![0].message).toBe(
+    expect((await s1.validateAsyncWithRawErrors("-"))![0].message).toBe(
       translateMessage("string_time_before", [before])
     )
-    expect(await s1.validateAsync("11:00")).toBe(undefined)
+    expect(await s1.validateAsyncWithRawErrors("11:00")).toBe(undefined)
 
     const s2 = string().timeBefore(() => before)
 
@@ -832,10 +853,10 @@ describe("StringSchema", () => {
     expect(await s1.testAsync("")).toBe(false)
     expect(await s1.optional().testAsync("")).toBe(true)
 
-    expect((await s1.validateAsync("-"))![0].message).toBe(
+    expect((await s1.validateAsyncWithRawErrors("-"))![0].message).toBe(
       translateMessage("string_time_before_or_same", [before])
     )
-    expect(await s1.validateAsync("11:00")).toBe(undefined)
+    expect(await s1.validateAsyncWithRawErrors("11:00")).toBe(undefined)
 
     const s2 = string().timeBeforeOrSame(() => before)
 
@@ -855,10 +876,10 @@ describe("StringSchema", () => {
     expect(await s1.testAsync("")).toBe(false)
     expect(await s1.optional().testAsync("")).toBe(true)
 
-    expect((await s1.validateAsync("-"))![0].message).toBe(
+    expect((await s1.validateAsyncWithRawErrors("-"))![0].message).toBe(
       translateMessage("string_time_after", [after])
     )
-    expect(await s1.validateAsync("13:00")).toBe(undefined)
+    expect(await s1.validateAsyncWithRawErrors("13:00")).toBe(undefined)
 
     const s2 = string().timeAfter(() => after)
 
@@ -878,10 +899,10 @@ describe("StringSchema", () => {
     expect(await s1.testAsync("")).toBe(false)
     expect(await s1.optional().testAsync("")).toBe(true)
 
-    expect((await s1.validateAsync("-"))![0].message).toBe(
+    expect((await s1.validateAsyncWithRawErrors("-"))![0].message).toBe(
       translateMessage("string_time_after_or_same", [after])
     )
-    expect(await s1.validateAsync("13:00")).toBe(undefined)
+    expect(await s1.validateAsyncWithRawErrors("13:00")).toBe(undefined)
 
     const s2 = string().timeAfterOrSame(() => after)
 
@@ -906,10 +927,10 @@ describe("StringSchema", () => {
     expect(await s1.testAsync("")).toBe(false)
     expect(await s1.optional().testAsync("")).toBe(true)
 
-    expect((await s1.validateAsync("-"))![0].message).toBe(
+    expect((await s1.validateAsyncWithRawErrors("-"))![0].message).toBe(
       translateMessage("string_time_between", [after, before])
     )
-    expect(await s1.validateAsync("12:00")).toBe(undefined)
+    expect(await s1.validateAsyncWithRawErrors("12:00")).toBe(undefined)
 
     const s2 = string().timeBetween(
       () => after,
@@ -937,10 +958,10 @@ describe("StringSchema", () => {
     expect(await s1.testAsync("")).toBe(false)
     expect(await s1.optional().testAsync("")).toBe(true)
 
-    expect((await s1.validateAsync("-"))![0].message).toBe(
+    expect((await s1.validateAsyncWithRawErrors("-"))![0].message).toBe(
       translateMessage("string_time_between_or_same", [after, before])
     )
-    expect(await s1.validateAsync("12:00")).toBe(undefined)
+    expect(await s1.validateAsyncWithRawErrors("12:00")).toBe(undefined)
 
     const s2 = string().timeBetweenOrSame(
       () => after,
@@ -1054,16 +1075,16 @@ describe("StringSchema", () => {
     expect(s.test("foo yolo swag bar")).toBe(false)
     expect(s.test("foo yolo bar")).toBe(true)
 
-    expect(s.validate(arg4)![0].message).toBe(
+    expect(s.validateWithRawErrors(arg4)![0].message).toBe(
       translateMessage("string_starts_with", [arg1])
     )
-    expect(s.validate(arg4)![1].message).toBe(
+    expect(s.validateWithRawErrors(arg4)![1].message).toBe(
       translateMessage("string_ends_with", [arg2])
     )
-    expect(s.validate(arg4)![2].message).toBe(
+    expect(s.validateWithRawErrors(arg4)![2].message).toBe(
       translateMessage("string_includes", [arg3])
     )
-    expect(s.validate(arg4)![3].message).toBe(
+    expect(s.validateWithRawErrors(arg4)![3].message).toBe(
       translateMessage("string_omits", [arg4])
     )
   })
@@ -1087,16 +1108,16 @@ describe("StringSchema", () => {
     expect(await s.testAsync("foo yolo swag bar")).toBe(false)
     expect(await s.testAsync("foo yolo bar")).toBe(true)
 
-    expect((await s.validateAsync(arg4))![0].message).toBe(
+    expect((await s.validateAsyncWithRawErrors(arg4))![0].message).toBe(
       translateMessage("string_starts_with", [arg1])
     )
-    expect((await s.validateAsync(arg4))![1].message).toBe(
+    expect((await s.validateAsyncWithRawErrors(arg4))![1].message).toBe(
       translateMessage("string_ends_with", [arg2])
     )
-    expect((await s.validateAsync(arg4))![2].message).toBe(
+    expect((await s.validateAsyncWithRawErrors(arg4))![2].message).toBe(
       translateMessage("string_includes", [arg3])
     )
-    expect((await s.validateAsync(arg4))![3].message).toBe(
+    expect((await s.validateAsyncWithRawErrors(arg4))![3].message).toBe(
       translateMessage("string_omits", [arg4])
     )
   })
@@ -1108,7 +1129,7 @@ describe("StringSchema", () => {
     expect(await s1.testAsync("123")).toBe(true)
     expect(await s1.testAsync("xy")).toBe(true)
 
-    const errors1 = (await s1.validateAsync("1"))!
+    const errors1 = (await s1.validateAsyncWithRawErrors("1"))!
 
     expect(errors1!.length).toBe(2)
     expect(errors1[0].message).toBe(translateMessage("string_min", [3]))
@@ -1116,8 +1137,8 @@ describe("StringSchema", () => {
     expect(errors1[1].message).toBe(translateMessage("string_equals", ["xy"]))
     expect(errors1[1].link).toBe("or")
 
-    expect(await s1.validateAsync("123")).toBe(undefined)
-    expect(await s1.validateAsync("xy")).toBe(undefined)
+    expect(await s1.validateAsyncWithRawErrors("123")).toBe(undefined)
+    expect(await s1.validateAsyncWithRawErrors("xy")).toBe(undefined)
 
     const s2 = string()
       .min(3)
@@ -1128,7 +1149,7 @@ describe("StringSchema", () => {
     expect(await s2.testAsync("xy")).toBe(true)
     expect(await s2.testAsync("yx")).toBe(true)
 
-    const errors2 = (await s2.validateAsync("1"))!
+    const errors2 = (await s2.validateAsyncWithRawErrors("1"))!
 
     expect(errors2!.length).toBe(3)
     expect(errors2[0].message).toBe(translateMessage("string_min", [3]))
@@ -1138,9 +1159,9 @@ describe("StringSchema", () => {
     expect(errors2[2].message).toBe(translateMessage("string_equals", ["yx"]))
     expect(errors2[2].link).toBe("or.or")
 
-    expect(await s2.validateAsync("123")).toBe(undefined)
-    expect(await s2.validateAsync("xy")).toBe(undefined)
-    expect(await s2.validateAsync("yx")).toBe(undefined)
+    expect(await s2.validateAsyncWithRawErrors("123")).toBe(undefined)
+    expect(await s2.validateAsyncWithRawErrors("xy")).toBe(undefined)
+    expect(await s2.validateAsyncWithRawErrors("yx")).toBe(undefined)
   })
 
   test("lazy or", () => {
@@ -1176,17 +1197,17 @@ describe("StringSchema", () => {
     expect(await s1.testAsync("12")).toBe(false)
     expect(await s1.testAsync("xy")).toBe(true)
 
-    const errors1 = (await s1.validateAsync("1"))!
+    const errors1 = (await s1.validateAsyncWithRawErrors("1"))!
 
     expect(errors1.length).toBe(1)
     expect(errors1[0].message).toBe(translateMessage("string_min", [2]))
     expect(errors1[0].link).toBe(undefined)
 
-    const errors2 = (await s1.validateAsync("12"))!
+    const errors2 = (await s1.validateAsyncWithRawErrors("12"))!
     expect(errors2[0].message).toBe(translateMessage("string_equals", ["xy"]))
     expect(errors2[0].link).toBe("and")
 
-    expect(await s1.validateAsync("xy")).toBe(undefined)
+    expect(await s1.validateAsyncWithRawErrors("xy")).toBe(undefined)
 
     const s2 = string()
       .min(2)
@@ -1196,13 +1217,13 @@ describe("StringSchema", () => {
     expect(await s2.testAsync("xyz")).toBe(false)
     expect(await s2.testAsync("xyzx")).toBe(false)
 
-    const errors3 = (await s2.validateAsync("xy"))!
+    const errors3 = (await s2.validateAsyncWithRawErrors("xy"))!
 
     expect(errors3.length).toBe(1)
     expect(errors3[0].message).toBe(translateMessage("string_equals", ["xyz"]))
     expect(errors3[0].link).toBe("and")
 
-    const errors4 = (await s2.validateAsync("xyz"))!
+    const errors4 = (await s2.validateAsyncWithRawErrors("xyz"))!
 
     expect(errors3.length).toBe(1)
     expect(errors4[0].message).toBe(translateMessage("string_length", [4]))
@@ -1238,17 +1259,17 @@ describe("StringSchema", () => {
       .and(string().min(2).and(string().min(2)))
       .and(string().min(2))
 
-    const errors1 = (await s.validateAsync(""))!
+    const errors1 = (await s.validateAsyncWithRawErrors(""))!
 
     expect(errors1.length).toBe(1)
     expect(errors1[0].message).toBe(translateMessage("string_required"))
 
-    const errors2 = (await s.validateAsync("a"))!
+    const errors2 = (await s.validateAsyncWithRawErrors("a"))!
 
     expect(errors2.length).toBe(1)
     expect(errors2[0].message).toBe(translateMessage("string_min", [2]))
 
-    expect(await s.validateAsync("ab")).toBe(undefined)
+    expect(await s.validateAsyncWithRawErrors("ab")).toBe(undefined)
   })
 
   test("and or", () => {
@@ -1259,7 +1280,7 @@ describe("StringSchema", () => {
     expect(s.test("1")).toBe(false)
     expect(s.test("xy")).toBe(true)
 
-    const errors1 = s.validate("1")!
+    const errors1 = s.validateWithRawErrors("1")!
 
     expect(errors1.length).toBe(2)
     expect(errors1[0].message).toBe(translateMessage("string_min", [3]))
@@ -1267,7 +1288,7 @@ describe("StringSchema", () => {
     expect(errors1[1].message).toBe(translateMessage("string_min", [2]))
     expect(errors1[1].link).toBe("or")
 
-    const errors2 = s.validate("yx")!
+    const errors2 = s.validateWithRawErrors("yx")!
 
     expect(errors2.length).toBe(2)
     expect(errors2[0].message).toBe(translateMessage("string_min", [3]))
@@ -1275,9 +1296,9 @@ describe("StringSchema", () => {
     expect(errors2[1].message).toBe(translateMessage("string_equals", ["xy"]))
     expect(errors2[1].link).toBe("or.and")
 
-    expect(s.validate("xy")).toBe(undefined)
+    expect(s.validateWithRawErrors("xy")).toBe(undefined)
 
-    const errors3 = s.validate("12")!
+    const errors3 = s.validateWithRawErrors("12")!
 
     expect(errors3.length).toBe(2)
     expect(errors3[0].message).toBe(translateMessage("string_min", [3]))
@@ -1285,7 +1306,7 @@ describe("StringSchema", () => {
     expect(errors3[1].message).toBe(translateMessage("string_equals", ["xy"]))
     expect(errors3[1].link).toBe("or.and")
 
-    const errors4 = s.validate("123")!
+    const errors4 = s.validateWithRawErrors("123")!
 
     expect(errors4).toBe(undefined)
   })
@@ -1297,7 +1318,7 @@ describe("StringSchema", () => {
       .or(string().min(2))
       .and(string().endsWith("a"))
 
-    const errors1 = (await s.validateAsync("b"))!
+    const errors1 = (await s.validateAsyncWithRawErrors("b"))!
 
     expect(errors1.length).toBe(3)
     expect(errors1[0].message).toBe(translateMessage("string_min", [4]))
@@ -1307,15 +1328,15 @@ describe("StringSchema", () => {
     expect(errors1[2].message).toBe(translateMessage("string_min", [2]))
     expect(errors1[2].link).toBe("or")
 
-    const errors2 = (await s.validateAsync("ab"))!
+    const errors2 = (await s.validateAsyncWithRawErrors("ab"))!
 
     expect(errors2.length).toBe(1)
     expect(errors2[0].message).toBe(translateMessage("string_ends_with", ["a"]))
     expect(errors2[0].link).toBe("and")
 
-    expect(await s.validateAsync("aa")).toBe(undefined)
-    expect(await s.validateAsync("aaa")).toBe(undefined)
-    expect(await s.validateAsync("aaaa")).toBe(undefined)
+    expect(await s.validateAsyncWithRawErrors("aa")).toBe(undefined)
+    expect(await s.validateAsyncWithRawErrors("aaa")).toBe(undefined)
+    expect(await s.validateAsyncWithRawErrors("aaaa")).toBe(undefined)
   })
 
   test("and returns a schema", () => {
@@ -1330,7 +1351,9 @@ describe("StringSchema", () => {
 
   test("and returns a schema result", () => {
     let length = 1
-    const s = string().and((value) => string().min(length).validate(value))
+    const s = string().and((value) =>
+      string().min(length).validateWithRawErrors(value)
+    )
 
     length = 2
 
@@ -1346,7 +1369,7 @@ describe("StringSchema", () => {
 
     expect(s.test("1")).toBe(false)
 
-    const errors = s.validate("12")!
+    const errors = s.validateWithRawErrors("12")!
 
     expect(errors.length).toBe(1)
     expect(errors[0].message).toBe("too short")
@@ -1363,8 +1386,8 @@ describe("StringSchema", () => {
     expect(s.test("12")).toBe(false)
     expect(s.test("123")).toBe(true)
 
-    expect(s.validate("12")![0].message).toBe("too short")
-    expect(s.validate("123")).toBe(undefined)
+    expect(s.validateWithRawErrors("12")![0].message).toBe("too short")
+    expect(s.validateWithRawErrors("123")).toBe(undefined)
   })
 
   test("validator returns a schema", () => {
@@ -1378,17 +1401,17 @@ describe("StringSchema", () => {
     expect(s.test("abc")).toBe(false)
     expect(s.test("123")).toBe(true)
 
-    expect(s.validate("ab")).toBe(undefined)
-    expect(s.validate("abc")![0].message).toBe(
+    expect(s.validateWithRawErrors("ab")).toBe(undefined)
+    expect(s.validateWithRawErrors("abc")![0].message).toBe(
       translateMessage("string_numeric")
     )
-    expect(s.validate("123")).toBe(undefined)
+    expect(s.validateWithRawErrors("123")).toBe(undefined)
   })
 
   test("validator that returns a schema result", () => {
     const s = string().validator((value) => {
       if (value.length > 2) {
-        return string().numeric().validate(value)
+        return string().numeric().validateWithRawErrors(value)
       }
     })
 
@@ -1396,11 +1419,11 @@ describe("StringSchema", () => {
     expect(s.test("abc")).toBe(false)
     expect(s.test("123")).toBe(true)
 
-    expect(s.validate("ab")).toBe(undefined)
-    expect(s.validate("abc")![0].message).toBe(
+    expect(s.validateWithRawErrors("ab")).toBe(undefined)
+    expect(s.validateWithRawErrors("abc")![0].message).toBe(
       translateMessage("string_numeric")
     )
-    expect(s.validate("123")).toBe(undefined)
+    expect(s.validateWithRawErrors("123")).toBe(undefined)
   })
 
   test("validator with an empty return", () => {
@@ -1434,9 +1457,9 @@ describe("StringSchema", () => {
     expect(s.test("123")).toBe(false)
     expect(s.test("12@")).toBe(true)
 
-    expect(s.validate("12")![0].message).toBe("too short")
-    expect(s.validate("123")![0].message).toBe("must contain @")
-    expect(s.validate("12@")).toBe(undefined)
+    expect(s.validateWithRawErrors("12")![0].message).toBe("too short")
+    expect(s.validateWithRawErrors("123")![0].message).toBe("must contain @")
+    expect(s.validateWithRawErrors("12@")).toBe(undefined)
   })
 
   test("async validator", async () => {
@@ -1449,8 +1472,10 @@ describe("StringSchema", () => {
     expect(await s.testAsync("12")).toBe(false)
     expect(await s.testAsync("123")).toBe(true)
 
-    expect((await s.validateAsync("12"))![0].message).toBe("too short")
-    expect(await s.validateAsync("123")).toBe(undefined)
+    expect((await s.validateAsyncWithRawErrors("12"))![0].message).toBe(
+      "too short"
+    )
+    expect(await s.validateAsyncWithRawErrors("123")).toBe(undefined)
   })
 
   test("sanitizer", () => {
@@ -1477,50 +1502,83 @@ describe("StringSchema", () => {
     expect(s.sanitize(" 12 ")).toEqual("12")
   })
 
-  test("sanitizeAsync", async () => {
+  test("sanitize async", async () => {
     const s = string().toTrimmed().length(2)
 
     expect(await s.sanitizeAsync(" 12 ")).toEqual("12")
   })
 
-  test("sanitizeAndTest", () => {
+  test("sanitize and test", () => {
     const s = string().toTrimmed().length(2)
 
     expect(s.sanitizeAndTest(" 12 ")).toEqual([true, "12"])
   })
 
-  test("sanitizeAndTestAsync", async () => {
+  test("sanitize and test async", async () => {
     const s = string().toTrimmed().length(2)
 
     expect(await s.sanitizeAndTestAsync(" 12 ")).toEqual([true, "12"])
+  })
+
+  test("validate with raw errors", () => {
+    const s = string().min(2)
+    const errors = s.validateWithRawErrors("1")!
+
+    expect(errors.length).toBe(1)
+    expect(errors[0].message).toBe(translateMessage("string_min", [2]))
+
+    expect(s.validateWithRawErrors("12")).toBe(undefined)
   })
 
   test("validate", () => {
     const s = string().min(2)
     const errors = s.validate("1")!
 
-    expect(errors.length).toBe(1)
-    expect(errors[0].message).toBe(translateMessage("string_min", [2]))
+    expect(!!errors).toBe(true)
+    expect(errors.self[0]).toBe(translateMessage("string_min", [2]))
 
     expect(s.validate("12")).toBe(undefined)
   })
 
-  test("validateAsync", async () => {
+  test("validate async with raw errors", async () => {
     const s = string().min(2)
-    const errors = (await s.validateAsync("1"))!
+    const errors = (await s.validateAsyncWithRawErrors("1"))!
 
     expect(errors.length).toBe(1)
     expect(errors[0].message).toBe(translateMessage("string_min", [2]))
 
+    expect(await s.validateAsyncWithRawErrors("12")).toBe(undefined)
+  })
+
+  test("validate async", async () => {
+    const s = string().min(2)
+    const errors = (await s.validateAsync("1"))!
+
+    expect(!!errors).toBe(true)
+    expect(errors.self[0]).toBe(translateMessage("string_min", [2]))
+
     expect(await s.validateAsync("12")).toBe(undefined)
   })
 
-  test("sanitizeAndValidate", () => {
+  test("sanitize and validate with raw errors", () => {
     const s = string().length(2).toTrimmed()
-    const [errors1, value1] = s.sanitizeAndValidate("   1   ")
+    const [errors1, value1] = s.sanitizeAndValidateWithRawErrors("   1   ")
 
     expect(errors1!.length).toBe(1)
     expect(errors1![0].message).toBe(translateMessage("string_length", [2]))
+    expect(value1).toEqual("1")
+
+    const [errors2, value2] = s.sanitizeAndValidateWithRawErrors("   12   ")
+    expect(errors2).toBe(undefined)
+    expect(value2).toEqual("12")
+  })
+
+  test("sanitize and validate", () => {
+    const s = string().length(2).toTrimmed()
+    const [errors1, value1] = s.sanitizeAndValidate("   1   ")
+
+    expect(!!errors1).toBe(true)
+    expect(errors1!.self[0]).toBe(translateMessage("string_length", [2]))
     expect(value1).toEqual("1")
 
     const [errors2, value2] = s.sanitizeAndValidate("   12   ")
@@ -1528,12 +1586,29 @@ describe("StringSchema", () => {
     expect(value2).toEqual("12")
   })
 
-  test("sanitizeAndValidateAsync", async () => {
+  test("sanitize and validate async with raw errors", async () => {
     const s = string().length(2).toTrimmed()
-    const [errors1, value1] = await s.sanitizeAndValidateAsync("   1   ")
+    const [errors1, value1] = await s.sanitizeAndValidateAsyncWithRawErrors(
+      "   1   "
+    )
 
     expect(errors1!.length).toBe(1)
     expect(errors1![0].message).toBe(translateMessage("string_length", [2]))
+    expect(value1).toEqual("1")
+
+    const [errors2, value2] = await s.sanitizeAndValidateAsyncWithRawErrors(
+      "   12   "
+    )
+    expect(errors2).toBe(undefined)
+    expect(value2).toEqual("12")
+  })
+
+  test("sanitize and validate async", async () => {
+    const s = string().length(2).toTrimmed()
+    const [errors1, value1] = await s.sanitizeAndValidateAsync("   1   ")
+
+    expect(!!errors1).toBe(true)
+    expect(errors1!.self[0]).toBe(translateMessage("string_length", [2]))
     expect(value1).toEqual("1")
 
     const [errors2, value2] = await s.sanitizeAndValidateAsync("   12   ")
@@ -1541,23 +1616,23 @@ describe("StringSchema", () => {
     expect(value2).toEqual("12")
   })
 
-  test("validate conditional with early exit", async () => {
+  test("validate with raw errors conditional with early exit", async () => {
     const errors1 = string()
       .and(() => false && string().min(2))
-      .validate("a")
+      .validateWithRawErrors("a")
     const errors2 = await string()
       .and(() => false && string().min(2))
-      .validateAsync("a")
+      .validateAsyncWithRawErrors("a")
 
     expect(errors1).toBe(undefined)
     expect(errors2).toBe(undefined)
 
     const errors3 = string()
       .and(() => true && string().min(2))
-      .validate("a")
+      .validateWithRawErrors("a")
     const errors4 = await string()
       .and(() => true && string().min(2))
-      .validateAsync("a")
+      .validateAsyncWithRawErrors("a")
 
     expect(errors3!.length).toBe(1)
     expect(errors3![0].message).toBe(translateMessage("string_min", [2]))
@@ -1566,33 +1641,32 @@ describe("StringSchema", () => {
 
     const errors5 = string()
       .and(() => true && string().min(2))
-      .validate("aa")
+      .validateWithRawErrors("aa")
     const errors6 = await string()
       .and(() => true && string().min(2))
-      .validateAsync("aa")
+      .validateAsyncWithRawErrors("aa")
 
     expect(errors5).toBe(undefined)
     expect(errors6).toBe(undefined)
   })
 
-  test("validate validator / also with early exit", async () => {
-    //
+  test("validate with raw errors validator / also with early exit", async () => {
     const errors1 = string()
       .validator(() => false && string().min(2))
-      .validate("a")
+      .validateWithRawErrors("a")
     const errors2 = await string()
       .also(() => false && string().min(2))
-      .validateAsync("a")
+      .validateAsyncWithRawErrors("a")
 
     expect(errors1).toBe(undefined)
     expect(errors2).toBe(undefined)
 
     const errors3 = string()
       .and(() => true && string().min(2))
-      .validate("a")
+      .validateWithRawErrors("a")
     const errors4 = await string()
       .and(() => true && string().min(2))
-      .validateAsync("a")
+      .validateAsyncWithRawErrors("a")
 
     expect(errors3!.length).toBe(1)
     expect(errors3![0].message).toBe(translateMessage("string_min", [2]))
@@ -1601,10 +1675,10 @@ describe("StringSchema", () => {
 
     const errors5 = string()
       .and(() => true && string().min(2))
-      .validate("aa")
+      .validateWithRawErrors("aa")
     const errors6 = await string()
       .and(() => true && string().min(2))
-      .validateAsync("aa")
+      .validateAsyncWithRawErrors("aa")
 
     expect(errors5).toBe(undefined)
     expect(errors6).toBe(undefined)

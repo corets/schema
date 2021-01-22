@@ -16,11 +16,11 @@ describe("MixedSchema", () => {
     expect(await s1.testAsync(false)).toBe(true)
     expect(await s2.testAsync(false)).toBe(true)
 
-    const errors1 = (await s1.validateAsync(null))!
+    const errors1 = (await s1.validateAsyncWithRawErrors(null))!
 
     expect(errors1.length).toBe(1)
     expect(errors1[0].message).toBe(translateMessage("mixed_required"))
-    expect(await s1.validateAsync("")).toBe(undefined)
+    expect(await s1.validateAsyncWithRawErrors("")).toBe(undefined)
 
     expect(mixed().required(false).test(undefined)).toBe(true)
     expect(
@@ -43,7 +43,7 @@ describe("MixedSchema", () => {
     expect(await s.testAsync(1)).toBe(true)
     expect(await s.testAsync(false)).toBe(true)
 
-    expect(await s.validateAsync(null)).toBe(undefined)
+    expect(await s.validateAsyncWithRawErrors(null)).toBe(undefined)
   })
 
   test("equals", async () => {
@@ -54,10 +54,10 @@ describe("MixedSchema", () => {
     expect(await s1.testAsync(1)).toBe(false)
     expect(await s1.testAsync(equals)).toBe(true)
 
-    expect((await s1.validateAsync(""))![0].message).toBe(
+    expect((await s1.validateAsyncWithRawErrors(""))![0].message).toBe(
       translateMessage("mixed_equals", [equals])
     )
-    expect(await s1.validateAsync(equals)).toBe(undefined)
+    expect(await s1.validateAsyncWithRawErrors(equals)).toBe(undefined)
 
     const s2 = mixed().equals(() => equals)
 
@@ -73,10 +73,10 @@ describe("MixedSchema", () => {
     expect(await s1.testAsync(1)).toBe(true)
     expect(await s1.testAsync("foo")).toBe(true)
 
-    expect((await s1.validateAsync("1"))![0].message).toBe(
+    expect((await s1.validateAsyncWithRawErrors("1"))![0].message).toBe(
       translateMessage("mixed_one_of", [oneOf])
     )
-    expect(await s1.validateAsync(1)).toBe(undefined)
+    expect(await s1.validateAsyncWithRawErrors(1)).toBe(undefined)
 
     const s2 = mixed().oneOf(() => oneOf)
 
@@ -92,10 +92,10 @@ describe("MixedSchema", () => {
     expect(await s1.testAsync(2)).toBe(true)
     expect(await s1.testAsync("bar")).toBe(true)
 
-    expect((await s1.validateAsync(1))![0].message).toBe(
+    expect((await s1.validateAsyncWithRawErrors(1))![0].message).toBe(
       translateMessage("mixed_none_of", [noneOf])
     )
-    expect(await s1.validateAsync("1")).toBe(undefined)
+    expect(await s1.validateAsyncWithRawErrors("1")).toBe(undefined)
 
     const s2 = mixed().noneOf(() => noneOf)
 

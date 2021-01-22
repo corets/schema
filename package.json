@@ -21,6 +21,7 @@
   },
   "scripts": {
     "test": "jest",
+    "coverage": "jest --coverage && echo '\nOpen \"coverage/lcov-report/index.html\" in your browser\n'",
     "lint": "tsc --noEmit",
     "format": "prettier --write .",
     "build": "rm -rf dist && microbundle --entry src/index.ts --target web --format cjs,es",

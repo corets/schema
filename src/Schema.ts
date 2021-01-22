@@ -6,6 +6,8 @@ import {
   ValidationSchema,
   ValidationType,
   CustomValidation,
+  ValidationOptions,
+  ValidationResult,
 } from "./types"
 import { createValidationDefinition } from "./createValidationDefinition"
 import { createSanitizerDefinition } from "./createSanitizerDefinition"
@@ -20,6 +22,7 @@ import { testValue } from "./testValue"
 import { testAndOrSchemasAsync } from "./testAndOrSchemasAsync"
 import { validateValue } from "./validateValue"
 import { validateAndOrSchemas } from "./validateAndOrSchemas"
+import { createValidationResult } from "./createValidationResult"
 
 export abstract class Schema<TValue> implements ValidationSchema<TValue> {
   protected abstract cloneInstance(): this
@@ -90,27 +93,35 @@ export abstract class Schema<TValue> implements ValidationSchema<TValue> {
 
   validate(
     value: any,
-    language?: string,
-    fallbackLanguage?: string
+    options?: ValidationOptions
+  ): ValidationResult | undefined {
+    return createValidationResult(this.validateWithRawErrors(value, options))
+  }
+
+  validateWithRawErrors(
+    value: any,
+    options?: ValidationOptions
   ): ValidationError[] | undefined {
+    const validationOptions: ValidationOptions = {
+      language: options?.language,
+      fallbackLanguage: options?.fallbackLanguage,
+    }
+
     const errors = validateValue(
       value,
       this.validationDefinitions,
-      language,
-      fallbackLanguage
+      validationOptions
     )
     const customErrors = this.customValidationBehavior(
       value,
       errors,
-      language,
-      fallbackLanguage
+      validationOptions
     )
     const errorsWithAndOr = validateAndOrSchemas(
       value,
       customErrors,
       this.conditionalValidationDefinitions,
-      language,
-      fallbackLanguage
+      validationOptions
     )
     const dedupedErrors = dedupeValidationResult(errorsWithAndOr)
 
@@ -121,27 +132,37 @@ export abstract class Schema<TValue> implements ValidationSchema<TValue> {
 
   async validateAsync(
     value: any,
-    language?: string,
-    fallbackLanguage?: string
+    options?: ValidationOptions
+  ): Promise<ValidationResult | undefined> {
+    return createValidationResult(
+      await this.validateAsyncWithRawErrors(value, options)
+    )
+  }
+
+  async validateAsyncWithRawErrors(
+    value: any,
+    options?: ValidationOptions
   ): Promise<ValidationError[] | undefined> {
+    const validationOptions: ValidationOptions = {
+      language: options?.language,
+      fallbackLanguage: options?.fallbackLanguage,
+    }
+
     const errors = await validateValueAsync(
       value,
       this.validationDefinitions,
-      language,
-      fallbackLanguage
+      validationOptions
     )
     const customErrors = await this.customValidationBehaviorAsync(
       value,
       errors,
-      language,
-      fallbackLanguage
+      validationOptions
     )
     const errorsWithAndOr = await validateAndOrSchemasAsync(
       value,
       customErrors,
       this.conditionalValidationDefinitions,
-      language,
-      fallbackLanguage
+      validationOptions
     )
     const dedupedErrors = dedupeValidationResult(errorsWithAndOr)
 
@@ -200,34 +221,49 @@ export abstract class Schema<TValue> implements ValidationSchema<TValue> {
 
   sanitizeAndValidate<TValue, TSanitizedValue = TValue>(
     value: any,
-    language?: string,
-    fallbackLanguage?: string
-  ): [ValidationError[] | undefined, TSanitizedValue] {
+    options?: ValidationOptions
+  ): [ValidationResult | undefined, TSanitizedValue] {
     const sanitizedValue = this.sanitize<TValue, TSanitizedValue>(value)
-    const validationResult = this.validate(
-      sanitizedValue,
-      language,
-      fallbackLanguage
-    )
+    const validationResult = this.validate(sanitizedValue, options)
 
     return [validationResult, sanitizedValue]
   }
 
+  sanitizeAndValidateWithRawErrors<TValue, TSanitizedValue = TValue>(
+    value: any,
+    options?: ValidationOptions
+  ): [ValidationError[] | undefined, TSanitizedValue] {
+    const sanitizedValue = this.sanitize<TValue, TSanitizedValue>(value)
+    const errors = this.validateWithRawErrors(sanitizedValue, options)
+
+    return [errors, sanitizedValue]
+  }
+
   async sanitizeAndValidateAsync<TValue, TSanitizedValue = TValue>(
     value: any,
-    language?: string,
-    fallbackLanguage?: string
+    options?: ValidationOptions
+  ): Promise<[ValidationResult | undefined, TSanitizedValue]> {
+    const sanitizedValue = await this.sanitizeAsync<TValue, TSanitizedValue>(
+      value
+    )
+    const validationResult = await this.validateAsync(sanitizedValue, options)
+
+    return [validationResult, sanitizedValue]
+  }
+
+  async sanitizeAndValidateAsyncWithRawErrors<TValue, TSanitizedValue = TValue>(
+    value: any,
+    options?: ValidationOptions
   ): Promise<[ValidationError[] | undefined, TSanitizedValue]> {
     const sanitizedValue = await this.sanitizeAsync<TValue, TSanitizedValue>(
       value
     )
-    const validationResult = await this.validateAsync(
+    const errors = await this.validateAsyncWithRawErrors(
       sanitizedValue,
-      language,
-      fallbackLanguage
+      options
     )
 
-    return [validationResult, sanitizedValue]
+    return [errors, sanitizedValue]
   }
 
   protected customTestingBehavior(value: any, testResult: boolean): boolean {
@@ -244,8 +280,7 @@ export abstract class Schema<TValue> implements ValidationSchema<TValue> {
   protected customValidationBehavior(
     value: any,
     errors: ValidationError[],
-    language?: string,
-    fallbackLanguage?: string
+    options: ValidationOptions
   ): ValidationError[] {
     return errors
   }
@@ -253,8 +288,7 @@ export abstract class Schema<TValue> implements ValidationSchema<TValue> {
   protected async customValidationBehaviorAsync(
     value: any,
     errors: ValidationError[],
-    language?: string,
-    fallbackLanguage?: string
+    options: ValidationOptions
   ): Promise<ValidationError[]> {
     return errors
   }

@@ -2,6 +2,7 @@ import {
   ValidationDefinition,
   ValidationError,
   ValidationFunction,
+  ValidationOptions,
 } from "./types"
 import { translateValidationDefinition } from "./translateValidationDefinition"
 import { createValidationError } from "./createValidationError"
@@ -12,17 +13,15 @@ import { Schema } from "./Schema"
 export const validateValueAsync = async (
   value: any,
   definitions: ValidationDefinition[],
-  language?: string,
-  fallbackLanguage?: string
+  options: ValidationOptions
 ): Promise<ValidationError[]> => {
   const errors: ValidationError[] = []
 
   for (let definition of definitions) {
     if (definition.validator instanceof Schema) {
-      const newErrors = await definition.validator.validateAsync(
+      const newErrors = await definition.validator.validateAsyncWithRawErrors(
         value,
-        language,
-        fallbackLanguage
+        options
       )
 
       if (newErrors) {
@@ -35,7 +34,7 @@ export const validateValueAsync = async (
       )
 
       if (result instanceof Schema) {
-        result = await result.validateAsync(value, language, fallbackLanguage)
+        result = await result.validateAsyncWithRawErrors(value, options)
       }
 
       if (
@@ -55,8 +54,8 @@ export const validateValueAsync = async (
               ? result
               : translateValidationDefinition(
                   definition,
-                  language,
-                  fallbackLanguage
+                  options.language,
+                  options.fallbackLanguage
                 ),
             definition.args,
             value

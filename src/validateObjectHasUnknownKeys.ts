@@ -1,5 +1,5 @@
 import { difference, keys, isObjectLike } from "lodash-es"
-import { ObjectShape, ValidationError } from "./types"
+import { ObjectShape, ValidationError, ValidationOptions } from "./types"
 import { createValidationError } from "./createValidationError"
 import { translateMessage } from "./translateMessage"
 
@@ -7,8 +7,7 @@ export const validateObjectHasUnknownKeys = <TValue = any>(
   value: any,
   objectShape: ObjectShape<TValue> | undefined,
   allowUnknownKeysAndValues: boolean,
-  language?: string,
-  fallbackLanguage?: string
+  options: ValidationOptions
 ): ValidationError[] => {
   if (allowUnknownKeysAndValues || !isObjectLike(value)) return []
 
@@ -22,8 +21,8 @@ export const validateObjectHasUnknownKeys = <TValue = any>(
       translateMessage(
         "object_unknown_key",
         [unknownKey],
-        language,
-        fallbackLanguage
+        options.language,
+        options.fallbackLanguage
       ),
       [],
       value

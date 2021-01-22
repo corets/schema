@@ -1,12 +1,11 @@
-import { ObjectShape, ValidationError } from "./types"
+import { ObjectShape, ValidationError, ValidationOptions } from "./types"
 import { get, keys } from "lodash-es"
 import { joinPath } from "./helpers"
 
 export const validateObjectShape = (
   value: any,
   objectShape: ObjectShape<any> | undefined,
-  language?: string,
-  fallbackLanguage?: string
+  options: ValidationOptions
 ): ValidationError[] => {
   if (!objectShape) return []
 
@@ -15,7 +14,7 @@ export const validateObjectShape = (
   keys(objectShape).map((key) => {
     const shapeValue = objectShape[key]
     const keyValue = get(value, key)
-    const newErrors = shapeValue.validate(keyValue, language, fallbackLanguage)
+    const newErrors = shapeValue.validateWithRawErrors(keyValue, options)
 
     if (newErrors) {
       newErrors.forEach((error) => {
