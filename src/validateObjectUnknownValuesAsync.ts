@@ -17,7 +17,7 @@ export const validateObjectUnknownValuesAsync = async (
   await Promise.all(
     unknownKeys.map(async (unknownKey) => {
       const unknownValue = value[unknownKey]
-      const newErrors = await unknownValuesSchema.validateAsyncWithRawErrors(
+      const newErrors = await unknownValuesSchema.verifyAsync(
         unknownValue,
         options
       )

@@ -28,7 +28,7 @@ describe("createValidationResult", () => {
     expect(await s.testAsync({ bar: "12" })).toBe(true)
     expect(await s.testAsync({ bar: "123" })).toBe(true)
 
-    const errors = (await s.validateAsyncWithRawErrors({ foo: "1" }))!
+    const errors = (await s.verifyAsync({ foo: "1" }))!
 
     const expectedErrors = {
       foo: [

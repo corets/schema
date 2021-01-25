@@ -14,7 +14,7 @@ export const validateObjectShape = (
   keys(objectShape).map((key) => {
     const shapeValue = objectShape[key]
     const keyValue = get(value, key)
-    const newErrors = shapeValue.validateWithRawErrors(keyValue, options)
+    const newErrors = shapeValue.verify(keyValue, options)
 
     if (newErrors) {
       newErrors.forEach((error) => {

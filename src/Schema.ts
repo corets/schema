@@ -16,7 +16,7 @@ import { testValueAsync } from "./testValueAsync"
 import { validateValueAsync } from "./validateValueAsync"
 import { testAndOrSchemas } from "./testAndOrSchemas"
 import { validateAndOrSchemasAsync } from "./validateAndOrSchemasAsync"
-import { dedupeValidationResult } from "./dedupeValidationResult"
+import { dedupeValidationErrors } from "./dedupeValidationErrors"
 import { sanitizeValueAsync } from "./sanitizeValueAsync"
 import { testValue } from "./testValue"
 import { testAndOrSchemasAsync } from "./testAndOrSchemasAsync"
@@ -50,18 +50,8 @@ export abstract class Schema<TValue> implements ValidationSchema<TValue> {
     )
   }
 
-  // alias for "also()"
-  validator(validator: CustomValidation): this {
-    return this.also(validator)
-  }
-
   map(sanitizer: SanitizerFunction): this {
     return this.addSanitizerDefinition(createSanitizerDefinition(sanitizer))
-  }
-
-  // alias for "map()"
-  sanitizer(sanitizer: SanitizerFunction): this {
-    return this.map(sanitizer)
   }
 
   test(value: any): boolean {
@@ -95,10 +85,17 @@ export abstract class Schema<TValue> implements ValidationSchema<TValue> {
     value: any,
     options?: ValidationOptions
   ): ValidationResult | undefined {
-    return createValidationResult(this.validateWithRawErrors(value, options))
+    return createValidationResult(this.verify(value, options))
   }
 
-  validateWithRawErrors(
+  async validateAsync(
+    value: any,
+    options?: ValidationOptions
+  ): Promise<ValidationResult | undefined> {
+    return createValidationResult(await this.verifyAsync(value, options))
+  }
+
+  verify(
     value: any,
     options?: ValidationOptions
   ): ValidationError[] | undefined {
@@ -123,23 +120,14 @@ export abstract class Schema<TValue> implements ValidationSchema<TValue> {
       this.conditionalValidationDefinitions,
       validationOptions
     )
-    const dedupedErrors = dedupeValidationResult(errorsWithAndOr)
+    const dedupedErrors = dedupeValidationErrors(errorsWithAndOr)
 
     return !dedupedErrors || dedupedErrors.length === 0
       ? undefined
       : dedupedErrors
   }
 
-  async validateAsync(
-    value: any,
-    options?: ValidationOptions
-  ): Promise<ValidationResult | undefined> {
-    return createValidationResult(
-      await this.validateAsyncWithRawErrors(value, options)
-    )
-  }
-
-  async validateAsyncWithRawErrors(
+  async verifyAsync(
     value: any,
     options?: ValidationOptions
   ): Promise<ValidationError[] | undefined> {
@@ -164,7 +152,7 @@ export abstract class Schema<TValue> implements ValidationSchema<TValue> {
       this.conditionalValidationDefinitions,
       validationOptions
     )
-    const dedupedErrors = dedupeValidationResult(errorsWithAndOr)
+    const dedupedErrors = dedupeValidationErrors(errorsWithAndOr)
 
     return !dedupedErrors || dedupedErrors.length === 0
       ? undefined
@@ -229,16 +217,6 @@ export abstract class Schema<TValue> implements ValidationSchema<TValue> {
     return [validationResult, sanitizedValue]
   }
 
-  sanitizeAndValidateWithRawErrors<TValue, TSanitizedValue = TValue>(
-    value: any,
-    options?: ValidationOptions
-  ): [ValidationError[] | undefined, TSanitizedValue] {
-    const sanitizedValue = this.sanitize<TValue, TSanitizedValue>(value)
-    const errors = this.validateWithRawErrors(sanitizedValue, options)
-
-    return [errors, sanitizedValue]
-  }
-
   async sanitizeAndValidateAsync<TValue, TSanitizedValue = TValue>(
     value: any,
     options?: ValidationOptions
@@ -251,17 +229,24 @@ export abstract class Schema<TValue> implements ValidationSchema<TValue> {
     return [validationResult, sanitizedValue]
   }
 
-  async sanitizeAndValidateAsyncWithRawErrors<TValue, TSanitizedValue = TValue>(
+  sanitizeAndVerify<TValue, TSanitizedValue = TValue>(
+    value: any,
+    options?: ValidationOptions
+  ): [ValidationError[] | undefined, TSanitizedValue] {
+    const sanitizedValue = this.sanitize<TValue, TSanitizedValue>(value)
+    const errors = this.verify(sanitizedValue, options)
+
+    return [errors, sanitizedValue]
+  }
+
+  async sanitizeAndVerifyAsync<TValue, TSanitizedValue = TValue>(
     value: any,
     options?: ValidationOptions
   ): Promise<[ValidationError[] | undefined, TSanitizedValue]> {
     const sanitizedValue = await this.sanitizeAsync<TValue, TSanitizedValue>(
       value
     )
-    const errors = await this.validateAsyncWithRawErrors(
-      sanitizedValue,
-      options
-    )
+    const errors = await this.verifyAsync(sanitizedValue, options)
 
     return [errors, sanitizedValue]
   }

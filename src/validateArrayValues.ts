@@ -12,7 +12,7 @@ export const validateArrayValues = (
   const errors: ValidationError[] = []
 
   values.map((value, index) => {
-    const newErrors = valuesSchema.validateWithRawErrors(value, options)
+    const newErrors = valuesSchema.verify(value, options)
 
     if (newErrors) {
       newErrors.forEach((error) => {

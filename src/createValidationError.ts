@@ -13,5 +13,5 @@ export const createValidationError = (
   link?: ValidationLink,
   path?: ValidationPath
 ): ValidationError => {
-  return { type, message, args, value, link, path }
+  return { __type: "ValidationError", type, message, args, value, link, path }
 }

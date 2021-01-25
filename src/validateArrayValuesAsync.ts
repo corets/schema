@@ -13,10 +13,7 @@ export const validateArrayValuesAsync = async (
 
   await Promise.all(
     values.map(async (value, index) => {
-      const newErrors = await valuesSchema.validateAsyncWithRawErrors(
-        value,
-        options
-      )
+      const newErrors = await valuesSchema.verifyAsync(value, options)
 
       if (newErrors) {
         newErrors.forEach((error) => {

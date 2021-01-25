@@ -2,13 +2,15 @@ import {
   ValidationDefinition,
   ValidationError,
   ValidationFunction,
+  ValidationFunctionResult,
   ValidationOptions,
 } from "./types"
-import { translateValidationDefinition } from "./translateValidationDefinition"
 import { createValidationError } from "./createValidationError"
+import { translateValidationDefinition } from "./translateValidationDefinition"
 import { isValidationError } from "./isValidationError"
-import { isArray, isBoolean, isString } from "lodash-es"
+import { isArray, isString, isBoolean } from "lodash-es"
 import { Schema } from "./Schema"
+import { boolean } from "./factories/boolean"
 
 export const validateValueAsync = async (
   value: any,
@@ -19,50 +21,74 @@ export const validateValueAsync = async (
 
   for (let definition of definitions) {
     if (definition.validator instanceof Schema) {
-      const newErrors = await definition.validator.validateAsyncWithRawErrors(
-        value,
-        options
-      )
+      const schemaErrors =
+        (await definition.validator.verifyAsync(value, options)) || []
 
-      if (newErrors) {
-        errors.push(...newErrors)
-      }
-    } else {
-      let result = await (definition.validator as ValidationFunction)(
-        value,
-        ...definition.args
-      )
+      errors.push(...schemaErrors)
 
+      continue
+    }
+
+    const functionResult = await (definition.validator as ValidationFunction)(
+      value,
+      ...definition.args
+    )
+    const results = Array.isArray(functionResult)
+      ? functionResult
+      : [functionResult]
+
+    for (const result of results) {
+      // we might get another schema from a validation function,
+      // let's call it and merge the errors
       if (result instanceof Schema) {
-        result = await result.validateAsyncWithRawErrors(value, options)
-      }
+        const schemaErrors = (await result.verifyAsync(value, options)) || []
 
-      if (
-        ["and", "or", "custom"].includes(definition.type) &&
-        isBoolean(result)
-      ) {
+        errors.push(...schemaErrors)
+
         continue
       }
 
-      if (isValidationError(result)) {
-        if (isArray(result)) {
-          errors.push(...result)
-        } else {
-          const error = createValidationError(
-            definition.type,
-            isString(result)
-              ? result
-              : translateValidationDefinition(
-                  definition,
-                  options.language,
-                  options.fallbackLanguage
-                ),
-            definition.args,
-            value
-          )
-
-          errors.push(error)
+      if (typeof result === "boolean") {
+        // conditional definitions must always return some sort of an error,
+        // booleans are useful for chaining and early exits from conditionals,
+        // but can not represent an error
+        if (["and", "or", "custom"].includes(definition.type)) {
+          continue
         }
+
+        // regular validation functions return booleans to indicate whether a value
+        // is valid or not, we need to construct an error object based on the definition
+        if (result === false) {
+          errors.push(
+            createValidationError(
+              definition.type,
+              translateValidationDefinition(
+                definition,
+                options.language,
+                options.fallbackLanguage
+              ),
+              definition.args,
+              value
+            )
+          )
+        }
+
+        continue
+      }
+
+      // simple string returned from a custom validation function
+      if (typeof result === "string") {
+        errors.push(
+          createValidationError(definition.type, result, definition.args, value)
+        )
+
+        continue
+      }
+
+      // a validation error returned form a custom validation function
+      // as the result of a validateWithRawErrors call
+      if (result !== undefined) {
+        errors.push(result as ValidationError)
       }
     }
   }

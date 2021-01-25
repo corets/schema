@@ -15,10 +15,7 @@ export const validateObjectShapeAsync = async (
     keys(objectShape).map(async (key) => {
       const shapeValue = objectShape[key]
       const keyValue = get(value, key)
-      const newErrors = await shapeValue.validateAsyncWithRawErrors(
-        keyValue,
-        options
-      )
+      const newErrors = await shapeValue.verifyAsync(keyValue, options)
 
       if (newErrors) {
         newErrors.forEach((error) => {

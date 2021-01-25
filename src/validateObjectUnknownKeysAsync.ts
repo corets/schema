@@ -20,10 +20,7 @@ export const validateObjectUnknownKeysAsync = async (
 
   await Promise.all(
     unknownKeys.map(async (unknownKey) => {
-      const newErrors = await unknownKeysSchema.validateAsyncWithRawErrors(
-        unknownKey,
-        options
-      )
+      const newErrors = await unknownKeysSchema.verifyAsync(unknownKey, options)
 
       if (newErrors) {
         newErrors.forEach((error) => {

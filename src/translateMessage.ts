@@ -7,5 +7,9 @@ export const translateMessage = (
   language?: string,
   fallbackLanguage?: string
 ) => {
-  return schemaTranslator.get(key, args, language, fallbackLanguage)
+  return schemaTranslator.get(key, {
+    replace: args,
+    language,
+    fallbackLanguage,
+  })
 }

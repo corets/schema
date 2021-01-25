@@ -16,10 +16,7 @@ export const validateObjectUnknownValues = (
 
   unknownKeys.map((unknownKey) => {
     const unknownValue = value[unknownKey]
-    const newErrors = unknownValuesSchema.validateWithRawErrors(
-      unknownValue,
-      options
-    )
+    const newErrors = unknownValuesSchema.verify(unknownValue, options)
 
     if (newErrors) {
       newErrors.forEach((error) => {

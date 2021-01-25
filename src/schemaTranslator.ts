@@ -5,4 +5,7 @@ import fr from "./locales/fr.json"
 import it from "./locales/it.json"
 import ru from "./locales/ru.json"
 
-export const schemaTranslator = createTranslator({ en, de, fr, it, ru }, "en")
+export const schemaTranslator = createTranslator(
+  { en, de, fr, it, ru },
+  { language: "en" }
+)
