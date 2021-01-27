@@ -1,5 +1,6 @@
 {
   "name": "@corets/schema",
+  "description": "Easy object validation and normalisation",
   "version": "0.0.1-4",
   "author": "Maxim Kott",
   "license": "MIT",
@@ -17,6 +18,7 @@
     "/dist"
   ],
   "repository": "github:corets/schema",
+  "homepage": "https://corets.github.io/schema",
   "publishConfig": {
     "access": "public",
     "registry": "https://registry.npmjs.org"
