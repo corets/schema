@@ -1,7 +1,7 @@
 {
   "name": "@corets/schema",
   "description": "Easy object validation and normalisation",
-  "version": "0.0.1-5",
+  "version": "0.0.1-6",
   "author": "Maxim Kott",
   "license": "MIT",
   "main": "dist/index.js",
@@ -43,9 +43,9 @@
     "jest": "^25.1.0",
     "lodash": "^4.17.20",
     "microbundle": "^0.13.0",
+    "np": "^7.2.0",
     "prettier": "2.2.1",
     "ts-jest": "^25.2.1",
-    "typescript": "^3.8.3",
-    "np": "^7.2.0"
+    "typescript": "^3.8.3"
   }
 }
