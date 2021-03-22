@@ -207,7 +207,7 @@ describe("ArraySchema", () => {
     expect(await s1.testAsync([1, 4, 5])).toBe(true)
 
     expect((await s1.verifyAsync([2]))![0].message).toBe(
-      translateMessage("array_none_of", [JSON.stringify(arg)])
+      translateMessage("array_none_of", [arg.join(",")])
     )
     expect(await s1.verifyAsync([1])).toBe(undefined)
 
@@ -228,7 +228,7 @@ describe("ArraySchema", () => {
     expect(await s1.testAsync([2, 3])).toBe(true)
 
     expect((await s1.verifyAsync([1]))![0].message).toBe(
-      translateMessage("array_some_of", [JSON.stringify(arg)])
+      translateMessage("array_some_of", [arg.join(",")])
     )
     expect(await s1.verifyAsync([2])).toBe(undefined)
 

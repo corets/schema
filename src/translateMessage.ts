@@ -7,9 +7,11 @@ export const translateMessage = (
   language?: string,
   fallbackLanguage?: string
 ) => {
-  return schemaTranslator.get(key, {
-    replace: args,
-    language,
-    fallbackLanguage,
+  const interpolations = Object.fromEntries(args.map((v, i) => [i + 1, v]))
+
+  return schemaTranslator.t(key, {
+    ...interpolations,
+    lng: language,
+    fallbackLng: fallbackLanguage,
   })
 }
