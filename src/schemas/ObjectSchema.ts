@@ -118,10 +118,17 @@ export class ObjectSchema<TValue extends object> extends Schema<TValue> {
       this.allowUnknownKeysAndValues,
       options
     )
-    const isMissingKeysErrors = validateObjectIsMissingKeys(
+    const validateShapeErrors = validateObjectShape(
       value,
       this.objectShape,
       options
+    )
+    const shapeErrorPaths = validateShapeErrors.map((error) => error.path)
+    const isMissingKeysErrors = validateObjectIsMissingKeys(
+      value,
+      this.objectShape,
+      options,
+      shapeErrorPaths
     )
     const unknownKeysErrors = validateObjectUnknownKeys(
       value,
@@ -133,11 +140,6 @@ export class ObjectSchema<TValue extends object> extends Schema<TValue> {
       value,
       this.objectShape,
       this.unknownValuesSchema,
-      options
-    )
-    const validateShapeErrors = validateObjectShape(
-      value,
-      this.objectShape,
       options
     )
 
@@ -162,10 +164,17 @@ export class ObjectSchema<TValue extends object> extends Schema<TValue> {
       this.allowUnknownKeysAndValues,
       options
     )
-    const isMissingKeysErrors = validateObjectIsMissingKeys(
+    const validateShapeErrors = await validateObjectShapeAsync(
       value,
       this.objectShape,
       options
+    )
+    const shapeErrorPaths = validateShapeErrors.map((error) => error.path)
+    const isMissingKeysErrors = validateObjectIsMissingKeys(
+      value,
+      this.objectShape,
+      options,
+      shapeErrorPaths
     )
     const unknownKeysErrors = await validateObjectUnknownKeysAsync(
       value,
@@ -177,11 +186,6 @@ export class ObjectSchema<TValue extends object> extends Schema<TValue> {
       value,
       this.objectShape,
       this.unknownValuesSchema,
-      options
-    )
-    const validateShapeErrors = await validateObjectShapeAsync(
-      value,
-      this.objectShape,
       options
     )
 

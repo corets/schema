@@ -1,32 +1,44 @@
 import { difference, keys } from "lodash-es"
-import { ObjectShape, ValidationError, ValidationOptions } from "./types"
+import {
+  ObjectShape,
+  ValidationError,
+  ValidationOptions,
+  ValidationPath,
+} from "./types"
 import { createValidationError } from "./createValidationError"
 import { translateMessage } from "./translateMessage"
 
 export const validateObjectIsMissingKeys = <TValue = any>(
   value: any,
   objectShape: ObjectShape<TValue> | undefined,
-  options: ValidationOptions
+  options: ValidationOptions,
+  whitelistedErrorPaths: ValidationPath[]
 ): ValidationError[] => {
   const missingKeys = difference(keys(objectShape), keys(value))
+  const isValidationError = (value: any): value is ValidationError =>
+    value !== undefined
 
-  const errors: ValidationError[] = []
+  const errors = missingKeys
+    .map((missingKey) => {
+      if (!whitelistedErrorPaths.includes(missingKey)) {
+        return
+      }
 
-  missingKeys.forEach((missingKey) => {
-    const error = createValidationError(
-      "object_missing_key",
-      translateMessage(
+      const error = createValidationError(
         "object_missing_key",
-        [missingKey],
-        options.language,
-        options.fallbackLanguage
-      ),
-      [],
-      value
-    )
+        translateMessage(
+          "object_missing_key",
+          [missingKey],
+          options.language,
+          options.fallbackLanguage
+        ),
+        [],
+        value
+      )
 
-    errors.push(error)
-  })
+      return error
+    })
+    .filter(isValidationError)
 
   return errors
 }

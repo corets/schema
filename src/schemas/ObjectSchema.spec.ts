@@ -850,6 +850,23 @@ describe("ObjectSchema", () => {
     expect(value2).toEqual({ foo: "12" })
   })
 
+  test("omits errors for optional fields", () => {
+    const s1 = object({ foo: string().optional(), bar: string().optional() })
+    const errors1 = s1.validate({})
+
+    expect(errors1).toBe(undefined)
+
+    const s2 = object({ foo: string().optional(), bar: string() })
+    const errors2 = s2.validate({ bar: "bar" })
+
+    expect(errors2).toBe(undefined)
+
+    const s3 = object({ foo: string().optional(), bar: string() })
+    const errors3 = s3.validate({})
+
+    expect(errors3?.["self"]).toEqual(['Missing object key "bar"'])
+  })
+
   ////////////////////////////////////////////////////////////////////////////////
 
   test("value().object()", async () => {
