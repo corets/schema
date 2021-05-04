@@ -1735,6 +1735,13 @@ describe("StringSchema", () => {
     expect(result6).toBe(true)
   })
 
+  test("interpolates lazy arguments into translation message", () => {
+    const schema = string().noneOf(() => ["foo", "bar"])
+    const errors = schema.validate("foo")
+
+    expect(errors?.self).toEqual(['Must not be one of "foo,bar"'])
+  })
+
   ////////////////////////////////////////////////////////////////////////////////
 
   test("value().string()", async () => {
