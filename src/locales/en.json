@@ -30,6 +30,8 @@
   "number_positive": "Must be a positive number",
   "number_negative": "Must be a negative number",
   "number_integer": "Must be an integer",
+  "number_one_of": "Must be one of \"{{1}}\"",
+  "number_none_of": "Must not be one of \"{{1}}\"",
   "object_required": "Required",
   "object_type": "Must be an object",
   "object_equals": "Must be equal to \"{{1}}\"",

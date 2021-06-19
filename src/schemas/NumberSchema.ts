@@ -14,6 +14,8 @@ import {
   numberToFloored,
   numberToRounded,
   numberToTrunced,
+  numberOneOf,
+  numberNoneOf,
 } from "../assertions/number"
 import { CustomValidationMessage, LazyValue } from "../types"
 import { createValidationDefinition } from "../createValidationDefinition"
@@ -113,6 +115,34 @@ export class NumberSchema extends Schema<number> {
   integer(message?: CustomValidationMessage): this {
     return this.addValidationDefinition(
       createValidationDefinition("number_integer", numberInteger, [], message)
+    )
+  }
+
+  oneOf(
+    whitelist: LazyValue<number[]>,
+    message?: CustomValidationMessage
+  ): this {
+    return this.addValidationDefinition(
+      createValidationDefinition(
+        "number_one_of",
+        numberOneOf,
+        [whitelist],
+        message
+      )
+    )
+  }
+
+  noneOf(
+    blacklist: LazyValue<number[]>,
+    message?: CustomValidationMessage
+  ): this {
+    return this.addValidationDefinition(
+      createValidationDefinition(
+        "number_none_of",
+        numberNoneOf,
+        [blacklist],
+        message
+      )
     )
   }
 

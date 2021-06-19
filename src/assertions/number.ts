@@ -1,4 +1,4 @@
-import { isInteger, isNumber, round } from "lodash-es"
+import { includes, isInteger, isNumber, round } from "lodash-es"
 import { isDefined } from "./mixed"
 import { LazyValue, ValidationFunctionResult } from "../types"
 import { lazyValue } from "../lazyValue"
@@ -73,6 +73,24 @@ export const numberInteger = (value: any): ValidationFunctionResult => {
   if (!isDefinedNumber(value)) return
 
   return isInteger(value)
+}
+
+export const numberOneOf = (
+  value: any,
+  whitelist: LazyValue<number[]>
+): ValidationFunctionResult => {
+  if (!isDefinedNumber(value)) return
+
+  return includes(lazyValue(whitelist), value)
+}
+
+export const numberNoneOf = (
+  value: any,
+  blacklist: LazyValue<number[]>
+): ValidationFunctionResult => {
+  if (!isDefinedNumber(value)) return
+
+  return !includes(lazyValue(blacklist), value)
 }
 
 ////////////////////////////////////////////////////////////////////////////////

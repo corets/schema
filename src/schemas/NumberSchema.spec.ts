@@ -176,6 +176,48 @@ describe("NumberSchema", () => {
     expect(await s.verifyAsync(1)).toBe(undefined)
   })
 
+  test("oneOf", async () => {
+    const arg = [1, 2]
+    const s1 = number().oneOf(arg)
+
+    expect(await s1.testAsync(0)).toBe(false)
+    expect(await s1.optional().testAsync(0)).toBe(false)
+    expect(await s1.testAsync(1)).toBe(true)
+    expect(await s1.testAsync(1)).toBe(true)
+    expect(await s1.testAsync(undefined)).toBe(false)
+    expect(await s1.optional().testAsync(undefined)).toBe(true)
+
+    expect((await s1.verifyAsync(0))![0].message).toBe(
+      translateMessage("string_one_of", [arg])
+    )
+    expect(await s1.verifyAsync(1)).toBe(undefined)
+
+    const s2 = number().oneOf(() => arg)
+
+    expect(await s2.testAsync(1)).toBe(true)
+  })
+
+  test("noneOf", async () => {
+    const arg = [1, 2]
+    const s1 = number().noneOf(arg)
+
+    expect(await s1.testAsync(1)).toBe(false)
+    expect(await s1.optional().testAsync(1)).toBe(false)
+    expect(await s1.testAsync(2)).toBe(false)
+    expect(await s1.testAsync(0)).toBe(true)
+    expect(await s1.testAsync(undefined)).toBe(false)
+    expect(await s1.optional().testAsync(undefined)).toBe(true)
+
+    expect((await s1.verifyAsync(1))![0].message).toBe(
+      translateMessage("number_none_of", [arg])
+    )
+    expect(await s1.verifyAsync(0)).toBe(undefined)
+
+    const s2 = number().noneOf(() => arg)
+
+    expect(await s2.testAsync(0)).toBe(true)
+  })
+
   ////////////////////////////////////////////////////////////////////////////////
 
   test("toDefault", async () => {
