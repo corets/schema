@@ -140,20 +140,37 @@ describe("ObjectSchema", () => {
   })
 
   test("optional", async () => {
-    const s = object().optional()
+    const s1 = object({ foo: string() }).optional()
+    const s2 = object({ foo: string().optional() }).optional()
 
-    expect(await s.testAsync(null)).toBe(true)
-    expect(await s.testAsync(undefined)).toBe(true)
-    expect(await s.testAsync(1)).toBe(false)
-    expect(await s.testAsync({})).toBe(true)
+    expect(await s1.testAsync(null)).toBe(true)
+    expect(await s1.testAsync(undefined)).toBe(true)
+    expect(await s1.testAsync({})).toBe(false)
+    expect(await s1.testAsync(1)).toBe(false)
 
-    const errors = (await s.verifyAsync(1))!
+    expect(await s2.testAsync(null)).toBe(true)
+    expect(await s2.testAsync(undefined)).toBe(true)
+    expect(await s2.testAsync({})).toBe(true)
+    expect(await s2.testAsync(1)).toBe(false)
 
-    expect(errors.length).toBe(1)
-    expect(errors[0].message).toBe(translateMessage("object_type"))
+    expect(await s1.verifyAsync(null)).toBe(undefined)
+    expect(await s1.verifyAsync(undefined)).toBe(undefined)
 
-    expect(await s.verifyAsync(null)).toBe(undefined)
-    expect(await s.verifyAsync({})).toBe(undefined)
+    const errors1 = (await s1.verifyAsync({}))!
+    expect(errors1.length).toBe(2)
+    expect(errors1[0].message).toBe(
+      translateMessage("object_missing_key", ["foo"])
+    )
+
+    const errors2 = (await s1.verifyAsync(1))!
+    expect(errors2.length).toBe(3)
+    expect(errors2[0].message).toBe(translateMessage("object_type"))
+
+    expect(await s2.verifyAsync({})).toBe(undefined)
+
+    const errors3 = (await s1.verifyAsync(1))!
+    expect(errors3.length).toBe(3)
+    expect(errors3[0].message).toBe(translateMessage("object_type"))
   })
 
   test("equals", async () => {

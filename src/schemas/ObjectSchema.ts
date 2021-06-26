@@ -37,6 +37,7 @@ import { sanitizeObjectShape } from "../sanitizeObjectShape"
 import { validateObjectUnknownKeys } from "../validateObjectUnknownKeys"
 import { validateObjectUnknownValues } from "../validateObjectUnknownValues"
 import { validateObjectShape } from "../validateObjectShape"
+import { isDefined } from "../assertions/mixed"
 
 export class ObjectSchema<TValue extends object> extends Schema<TValue> {
   protected cloneInstance(): this {
@@ -59,6 +60,10 @@ export class ObjectSchema<TValue extends object> extends Schema<TValue> {
     errors: ValidationError[],
     options: ValidationOptions
   ): ValidationError[] {
+    if (!this.runAllTests(value)) {
+      return errors
+    }
+
     const hasUnknownKeysErrors = validateObjectHasUnknownKeys(
       value,
       this.objectShape,
@@ -105,6 +110,10 @@ export class ObjectSchema<TValue extends object> extends Schema<TValue> {
     errors: ValidationError[],
     options: ValidationOptions
   ): Promise<ValidationError[]> {
+    if (!this.runAllTests(value)) {
+      return errors
+    }
+
     const hasUnknownKeysErrors = validateObjectHasUnknownKeys(
       value,
       this.objectShape,
@@ -156,6 +165,10 @@ export class ObjectSchema<TValue extends object> extends Schema<TValue> {
     value: TValue
   ): Promise<TSanitizedValue> {
     return sanitizeObjectShapeAsync(value, this.objectShape)
+  }
+
+  private runAllTests(value: any): boolean {
+    return this.hasValidationDefinition("object_required") || isDefined(value)
   }
 
   protected objectShape?: ObjectShape<TValue>
