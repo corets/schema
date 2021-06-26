@@ -93,7 +93,7 @@ export const validateValue = (
 
       // a validation error returned form a custom validation function
       // as the result of a validateWithRawErrors call
-      if (result !== undefined) {
+      if (result !== undefined && result !== null) {
         errors.push(result as ValidationError)
       }
     }

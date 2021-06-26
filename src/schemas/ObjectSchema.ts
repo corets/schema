@@ -28,20 +28,12 @@ import {
 import { createValidationDefinition } from "../createValidationDefinition"
 import { createSanitizerDefinition } from "../createSanitizerDefinition"
 import { sanitizeObjectShapeAsync } from "../sanitizeObjectShapeAsync"
-import { testObjectHasUnknownKeys } from "../testObjectHasUnknownKeys"
-import { testObjectUnknownKeysAsync } from "../testObjectUnknownKeysAsync"
-import { testObjectUnknownValuesAsync } from "../testObjectUnknownValuesAsync"
-import { testObjectShapeAsync } from "../testObjectShapeAsync"
 import { validateObjectHasUnknownKeys } from "../validateObjectHasUnknownKeys"
 import { validateObjectUnknownKeysAsync } from "../validateObjectUnknownKeysAsync"
 import { validateObjectUnknownValuesAsync } from "../validateObjectUnknownValuesAsync"
 import { validateObjectShapeAsync } from "../validateObjectShapeAsync"
 import { validateObjectIsMissingKeys } from "../validateObjectIsMissingKeys"
-import { testObjectIsMissingKeys } from "../testObjectIsMissingKeys"
 import { sanitizeObjectShape } from "../sanitizeObjectShape"
-import { testObjectUnknownKeys } from "../testObjectUnknownKeys"
-import { testObjectUnknownValues } from "../testObjectUnknownValues"
-import { testObjectShape } from "../testObjectShape"
 import { validateObjectUnknownKeys } from "../validateObjectUnknownKeys"
 import { validateObjectUnknownValues } from "../validateObjectUnknownValues"
 import { validateObjectShape } from "../validateObjectShape"
@@ -60,51 +52,6 @@ export class ObjectSchema<TValue extends object> extends Schema<TValue> {
     schema.allowUnknownKeysAndValues = this.allowUnknownKeysAndValues
 
     return schema as any
-  }
-
-  protected customTestingBehavior(value: any, testResult: boolean): boolean {
-    return (
-      testResult &&
-      testObjectHasUnknownKeys(
-        value,
-        this.objectShape,
-        this.allowUnknownKeysAndValues
-      ) &&
-      testObjectIsMissingKeys(value, this.objectShape) &&
-      testObjectUnknownKeys(value, this.objectShape, this.unknownKeysSchema) &&
-      testObjectUnknownValues(
-        value,
-        this.objectShape,
-        this.unknownValuesSchema
-      ) &&
-      testObjectShape(value, this.objectShape)
-    )
-  }
-
-  protected async customTestingBehaviorAsync(
-    value: any,
-    testResult: boolean
-  ): Promise<boolean> {
-    return (
-      testResult &&
-      testObjectHasUnknownKeys(
-        value,
-        this.objectShape,
-        this.allowUnknownKeysAndValues
-      ) &&
-      testObjectIsMissingKeys(value, this.objectShape) &&
-      (await testObjectUnknownKeysAsync(
-        value,
-        this.objectShape,
-        this.unknownKeysSchema
-      )) &&
-      (await testObjectUnknownValuesAsync(
-        value,
-        this.objectShape,
-        this.unknownValuesSchema
-      )) &&
-      (await testObjectShapeAsync(value, this.objectShape))
-    )
   }
 
   protected customValidationBehavior(

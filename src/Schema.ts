@@ -12,14 +12,10 @@ import {
 import { createValidationDefinition } from "./createValidationDefinition"
 import { createSanitizerDefinition } from "./createSanitizerDefinition"
 import { sanitizeValue } from "./sanitizeValue"
-import { testValueAsync } from "./testValueAsync"
 import { validateValueAsync } from "./validateValueAsync"
-import { testAndOrSchemas } from "./testAndOrSchemas"
 import { validateAndOrSchemasAsync } from "./validateAndOrSchemasAsync"
 import { dedupeValidationErrors } from "./dedupeValidationErrors"
 import { sanitizeValueAsync } from "./sanitizeValueAsync"
-import { testValue } from "./testValue"
-import { testAndOrSchemasAsync } from "./testAndOrSchemasAsync"
 import { validateValue } from "./validateValue"
 import { validateAndOrSchemas } from "./validateAndOrSchemas"
 import { createValidationResult } from "./createValidationResult"
@@ -55,30 +51,11 @@ export abstract class Schema<TValue> implements ValidationSchema<TValue> {
   }
 
   test(value: any): boolean {
-    const testResult = testValue(value, this.validationDefinitions)
-    const customTestResult = this.customTestingBehavior(value, testResult)
-    const testResultWithAndOr = testAndOrSchemas(
-      value,
-      customTestResult,
-      this.conditionalValidationDefinitions
-    )
-
-    return testResultWithAndOr
+    return !this.validate(value)
   }
 
   async testAsync(value: any): Promise<boolean> {
-    const testResult = await testValueAsync(value, this.validationDefinitions)
-    const customTestResult = await this.customTestingBehaviorAsync(
-      value,
-      testResult
-    )
-    const testResultWithAndOr = await testAndOrSchemasAsync(
-      value,
-      customTestResult,
-      this.conditionalValidationDefinitions
-    )
-
-    return testResultWithAndOr
+    return !(await this.validateAsync(value))
   }
 
   validate(
@@ -251,17 +228,6 @@ export abstract class Schema<TValue> implements ValidationSchema<TValue> {
     return [errors, sanitizedValue]
   }
 
-  protected customTestingBehavior(value: any, testResult: boolean): boolean {
-    return testResult
-  }
-
-  protected async customTestingBehaviorAsync(
-    value: any,
-    testResult: boolean
-  ): Promise<boolean> {
-    return testResult
-  }
-
   protected customValidationBehavior(
     value: any,
     errors: ValidationError[],
@@ -303,6 +269,12 @@ export abstract class Schema<TValue> implements ValidationSchema<TValue> {
     schema.validationDefinitions.push(validationDefinition)
 
     return schema
+  }
+
+  protected hasValidationDefinition(type: ValidationType): boolean {
+    return !!this.validationDefinitions.find(
+      (validationDefinition) => validationDefinition.type === type
+    )
   }
 
   protected addConditionalValidationDefinition(

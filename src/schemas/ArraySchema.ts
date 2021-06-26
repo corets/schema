@@ -25,10 +25,8 @@ import {
 import { createValidationDefinition } from "../createValidationDefinition"
 import { createSanitizerDefinition } from "../createSanitizerDefinition"
 import { sanitizeArrayValuesAsync } from "../sanitizeArrayValuesAsync"
-import { testArrayValuesAsync } from "../testArrayValuesAsync"
 import { validateArrayValuesAsync } from "../validateArrayValuesAsync"
 import { sanitizeArrayValues } from "../sanitizeArrayValues"
-import { testArrayValues } from "../testArrayValues"
 import { validateArrayValues } from "../validateArrayValues"
 
 export class ArraySchema extends Schema<any[]> {
@@ -42,17 +40,6 @@ export class ArraySchema extends Schema<any[]> {
     schema.valuesSchema = this.valuesSchema
 
     return schema as any
-  }
-
-  protected customTestingBehavior(value: any, testResult: boolean): boolean {
-    return testResult && testArrayValues(value, this.valuesSchema)
-  }
-
-  protected async customTestingBehaviorAsync(
-    value: any,
-    testResult: boolean
-  ): Promise<boolean> {
-    return testResult && (await testArrayValuesAsync(value, this.valuesSchema))
   }
 
   protected customSanitizeBehavior<TValue, TSanitizedValue = TValue>(
