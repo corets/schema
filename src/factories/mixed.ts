@@ -1,3 +1,3 @@
 import { MixedSchema } from ".."
 
-export const mixed = () => new MixedSchema()
+export const mixed = <TValue = any>() => new MixedSchema<TValue>()

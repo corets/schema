@@ -10,7 +10,7 @@ import { CustomValidationMessage, LazyValue } from "../types"
 import { createValidationDefinition } from "../createValidationDefinition"
 import { createSanitizerDefinition } from "../createSanitizerDefinition"
 
-export class MixedSchema extends Schema<any> {
+export class MixedSchema<TValue = any> extends Schema<TValue> {
   constructor() {
     super()
     this.skipClone(() => this.required())
