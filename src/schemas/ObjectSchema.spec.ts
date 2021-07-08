@@ -4,7 +4,7 @@ import { translateMessage } from "../translateMessage"
 import { string } from "../factories/string"
 import { array } from "../factories/array"
 import { object } from "../factories/object"
-import { value } from "../factories/value"
+import { shape } from "../factories/shape"
 
 describe("ObjectSchema", () => {
   test("required", async () => {
@@ -887,7 +887,7 @@ describe("ObjectSchema", () => {
   ////////////////////////////////////////////////////////////////////////////////
 
   test("value().object()", async () => {
-    const s = value({ foo: "bar" }).object()
+    const s = shape({ foo: "bar" }).object()
 
     expect(s instanceof ObjectSchema).toBe(true)
     expect(await s.sanitizeAsync(undefined)).toEqual({ foo: "bar" })

@@ -10,11 +10,11 @@ import {
   object,
 } from ".."
 
-export const value = (defaultValue?: any): ValueFactory => {
-  return new ValueFactory(defaultValue)
+export const shape = (defaultValue?: any): ShapeFactory => {
+  return new ShapeFactory(defaultValue)
 }
 
-class ValueFactory {
+class ShapeFactory {
   private readonly defaultValue?: any
 
   constructor(defaultValue?: any) {

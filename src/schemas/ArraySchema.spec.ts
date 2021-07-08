@@ -5,7 +5,7 @@ import { string } from "../factories/string"
 import { number } from "../factories/number"
 import { boolean } from "../factories/boolean"
 import { array } from "../factories/array"
-import { value } from "../factories/value"
+import { shape } from "../factories/shape"
 
 describe("ArraySchema", () => {
   test("required", async () => {
@@ -690,7 +690,7 @@ describe("ArraySchema", () => {
   ////////////////////////////////////////////////////////////////////////////////
 
   test("value().array()", async () => {
-    const s = value(["foo"]).array()
+    const s = shape(["foo"]).array()
 
     expect(s instanceof ArraySchema).toBe(true)
     expect(await s.sanitizeAsync(undefined)).toEqual(["foo"])

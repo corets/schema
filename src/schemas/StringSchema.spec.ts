@@ -1,7 +1,7 @@
 import { StringSchema } from "../index"
 import { translateMessage } from "../translateMessage"
 import { string } from "../factories/string"
-import { value } from "../factories/value"
+import { shape } from "../factories/shape"
 import dayjs from "dayjs"
 import { stringTimeBefore } from "../assertions/string"
 
@@ -1746,7 +1746,7 @@ describe("StringSchema", () => {
   ////////////////////////////////////////////////////////////////////////////////
 
   test("value().string()", async () => {
-    const s = value("foo").string()
+    const s = shape("foo").string()
 
     expect(s instanceof StringSchema).toBe(true)
     expect(await s.sanitizeAsync(undefined)).toBe("foo")

@@ -1,7 +1,7 @@
 import { DateSchema } from "../index"
 import { translateMessage } from "../translateMessage"
 import { date } from "../factories/date"
-import { value } from "../factories/value"
+import { shape } from "../factories/shape"
 import dayjs from "dayjs"
 
 describe("DateSchema", () => {
@@ -169,7 +169,7 @@ describe("DateSchema", () => {
 
   test("value().date()", async () => {
     const date = new Date()
-    const s = value(date).date()
+    const s = shape(date).date()
 
     expect(s instanceof DateSchema).toBe(true)
     expect(await s.sanitizeAsync(undefined)).toBe(date)

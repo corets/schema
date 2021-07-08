@@ -1,7 +1,7 @@
 import { BooleanSchema } from "../index"
 import { translateMessage } from "../translateMessage"
 import { boolean } from "../factories/boolean"
-import { value } from "../factories/value"
+import { shape } from "../factories/shape"
 
 describe("BooleanSchema", () => {
   test("required", async () => {
@@ -93,7 +93,7 @@ describe("BooleanSchema", () => {
   ////////////////////////////////////////////////////////////////////////////////
 
   test("value().boolean()", async () => {
-    const s = value(true).boolean()
+    const s = shape(true).boolean()
 
     expect(s instanceof BooleanSchema).toBe(true)
     expect(await s.sanitizeAsync(undefined)).toBe(true)

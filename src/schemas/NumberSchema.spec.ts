@@ -1,7 +1,7 @@
 import { NumberSchema } from "../index"
 import { translateMessage } from "../translateMessage"
 import { number } from "../factories/number"
-import { value } from "../factories/value"
+import { shape } from "../factories/shape"
 
 describe("NumberSchema", () => {
   test("required", async () => {
@@ -265,7 +265,7 @@ describe("NumberSchema", () => {
   ////////////////////////////////////////////////////////////////////////////////
 
   test("value().number()", async () => {
-    const s = value(1).number()
+    const s = shape(1).number()
 
     expect(s instanceof NumberSchema).toBe(true)
     expect(await s.sanitizeAsync(undefined)).toBe(1)
