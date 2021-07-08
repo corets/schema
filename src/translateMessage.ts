@@ -12,9 +12,9 @@ export const translateMessage = (
     args.map((v, i) => [i + 1, isFunction(v) ? v() : v])
   )
 
-  return schemaTranslator.t(key, {
-    ...interpolations,
-    lng: language,
-    fallbackLng: fallbackLanguage,
+  return schemaTranslator.get(key, {
+    replace: interpolations,
+    language,
+    fallbackLanguage,
   })
 }

@@ -1736,10 +1736,11 @@ describe("StringSchema", () => {
   })
 
   test("interpolates lazy arguments into translation message", () => {
-    const schema = string().noneOf(() => ["foo", "bar"])
+    const args = ["foo", "bar"]
+    const schema = string().noneOf(() => args)
     const errors = schema.validate("foo")
 
-    expect(errors?.self).toEqual(['Must not be one of "foo,bar"'])
+    expect(errors?.self[0]).toBe(translateMessage("string_none_of", [args]))
   })
 
   ////////////////////////////////////////////////////////////////////////////////
