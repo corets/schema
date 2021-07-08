@@ -1,12 +1,12 @@
 import {
   camelCase,
-  isEqual,
   isObjectLike,
   kebabCase,
   mapKeys,
   mapValues,
   snakeCase,
 } from "lodash-es"
+import isEqual from "fast-deep-equal"
 import { isDefined } from "./mixed"
 import { mapKeysDeep, mapValuesDeep } from "../helpers"
 import { LazyValue, ValidationFunctionResult } from "../types"
