@@ -1,5 +1,5 @@
 import { ValidationFunctionResult } from "./types"
-import { isString, isArray } from "lodash-es"
+import { isString, isArray } from "lodash"
 
 export const isValidationError = (error: ValidationFunctionResult): boolean => {
   if (error === false || isString(error) || isArray(error)) {

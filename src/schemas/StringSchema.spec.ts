@@ -1,7 +1,7 @@
 import { StringSchema } from "../index"
 import { translateMessage } from "../translateMessage"
 import { string } from "../factories/string"
-import { shape } from "../factories/shape"
+import { schema } from "../factories/schema"
 import dayjs from "dayjs"
 import { stringTimeBefore } from "../assertions/string"
 
@@ -1737,8 +1737,8 @@ describe("StringSchema", () => {
 
   test("interpolates lazy arguments into translation message", () => {
     const args = ["foo", "bar"]
-    const schema = string().noneOf(() => args)
-    const errors = schema.validate("foo")
+    const s = string().noneOf(() => args)
+    const errors = s.validate("foo")
 
     expect(errors?.self[0]).toBe(translateMessage("string_none_of", [args]))
   })
@@ -1746,7 +1746,7 @@ describe("StringSchema", () => {
   ////////////////////////////////////////////////////////////////////////////////
 
   test("value().string()", async () => {
-    const s = shape("foo").string()
+    const s = schema("foo").string()
 
     expect(s instanceof StringSchema).toBe(true)
     expect(await s.sanitizeAsync(undefined)).toBe("foo")

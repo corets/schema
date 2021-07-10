@@ -8,7 +8,7 @@ import {
 import { createValidationError } from "./createValidationError"
 import { translateValidationDefinition } from "./translateValidationDefinition"
 import { isValidationError } from "./isValidationError"
-import { isArray, isString, isBoolean } from "lodash-es"
+import { isArray, isString, isBoolean } from "lodash"
 import { Schema } from "./Schema"
 import { boolean } from "./factories/boolean"
 

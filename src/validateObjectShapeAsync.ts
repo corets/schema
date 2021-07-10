@@ -1,5 +1,5 @@
 import { ObjectShape, ValidationError, ValidationOptions } from "./types"
-import { get, keys } from "lodash-es"
+import { get, keys } from "lodash"
 import { joinPath } from "./helpers"
 
 export const validateObjectShapeAsync = async (

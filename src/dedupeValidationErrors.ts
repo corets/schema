@@ -1,5 +1,5 @@
 import { ValidationError } from "./types"
-import { uniqBy } from "lodash-es"
+import { uniqBy } from "lodash"
 
 export const dedupeValidationErrors = (
   errors: ValidationError[]

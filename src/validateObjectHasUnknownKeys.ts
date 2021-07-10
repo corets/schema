@@ -1,4 +1,4 @@
-import { difference, keys, isObjectLike } from "lodash-es"
+import { difference, keys, isObjectLike } from "lodash"
 import { ObjectShape, ValidationError, ValidationOptions } from "./types"
 import { createValidationError } from "./createValidationError"
 import { translateMessage } from "./translateMessage"

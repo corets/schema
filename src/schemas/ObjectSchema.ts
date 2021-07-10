@@ -41,18 +41,18 @@ import { isDefined } from "../assertions/mixed"
 
 export class ObjectSchema<TValue extends object> extends Schema<TValue> {
   protected cloneInstance(): this {
-    const schema = new ObjectSchema()
-    schema.validationDefinitions = [...this.validationDefinitions]
-    schema.sanitizerDefinitions = [...this.sanitizerDefinitions]
-    schema.conditionalValidationDefinitions = [
+    const clone = new ObjectSchema()
+    clone.validationDefinitions = [...this.validationDefinitions]
+    clone.sanitizerDefinitions = [...this.sanitizerDefinitions]
+    clone.conditionalValidationDefinitions = [
       ...this.conditionalValidationDefinitions,
     ]
-    schema.objectShape = this.objectShape
-    schema.unknownKeysSchema = this.unknownKeysSchema
-    schema.unknownValuesSchema = this.unknownValuesSchema
-    schema.allowUnknownKeysAndValues = this.allowUnknownKeysAndValues
+    clone.objectShape = this.objectShape
+    clone.unknownKeysSchema = this.unknownKeysSchema
+    clone.unknownValuesSchema = this.unknownValuesSchema
+    clone.allowUnknownKeysAndValues = this.allowUnknownKeysAndValues
 
-    return schema as any
+    return clone as any
   }
 
   protected customValidationBehavior(
@@ -220,38 +220,38 @@ export class ObjectSchema<TValue extends object> extends Schema<TValue> {
   }
 
   shape(objectShape?: ObjectShape<TValue>): this {
-    const schema = this.clone()
-    schema.objectShape = objectShape
+    const clone = this.clone()
+    clone.objectShape = objectShape
 
-    return schema
+    return clone
   }
 
   allowUnknownKeys(): this {
-    const schema = this.clone()
-    schema.allowUnknownKeysAndValues = true
+    const clone = this.clone()
+    clone.allowUnknownKeysAndValues = true
 
-    return schema
+    return clone
   }
 
   disallowUnknownKeys(): this {
-    const schema = this.clone()
-    schema.allowUnknownKeysAndValues = false
+    const clone = this.clone()
+    clone.allowUnknownKeysAndValues = false
 
-    return schema
+    return clone
   }
 
   shapeUnknownKeys(unknownKeysSchema: StringSchema): this {
-    const schema = this.clone()
-    schema.unknownKeysSchema = unknownKeysSchema
+    const clone = this.clone()
+    clone.unknownKeysSchema = unknownKeysSchema
 
-    return schema.allowUnknownKeys()
+    return clone.allowUnknownKeys()
   }
 
   shapeUnknownValues(unknownValuesSchema: StringSchema): this {
-    const schema = this.clone()
-    schema.unknownValuesSchema = unknownValuesSchema
+    const clone = this.clone()
+    clone.unknownValuesSchema = unknownValuesSchema
 
-    return schema.allowUnknownKeys()
+    return clone.allowUnknownKeys()
   }
 
   toDefault(defaultValue: LazyValue<object> = {}): this {

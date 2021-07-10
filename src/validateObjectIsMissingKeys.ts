@@ -1,4 +1,4 @@
-import { difference, keys } from "lodash-es"
+import { difference, keys } from "lodash"
 import {
   ObjectShape,
   ValidationError,

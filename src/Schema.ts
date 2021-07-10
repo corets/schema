@@ -259,16 +259,16 @@ export abstract class Schema<TValue> implements ValidationSchema<TValue> {
   protected addValidationDefinition(
     validationDefinition: ValidationDefinition
   ): this {
-    let schema = this.clone()
+    let clone = this.clone()
 
     // do not remove custom validations, they all share the same key
     if (validationDefinition.type !== "custom") {
-      schema = this.removeValidationDefinitionsOfType(validationDefinition.type)
+      clone = this.removeValidationDefinitionsOfType(validationDefinition.type)
     }
 
-    schema.validationDefinitions.push(validationDefinition)
+    clone.validationDefinitions.push(validationDefinition)
 
-    return schema
+    return clone
   }
 
   protected hasValidationDefinition(type: ValidationType): boolean {
@@ -280,28 +280,28 @@ export abstract class Schema<TValue> implements ValidationSchema<TValue> {
   protected addConditionalValidationDefinition(
     validationDefinition: ValidationDefinition
   ): this {
-    let schema = this.clone()
-    schema.conditionalValidationDefinitions.push(validationDefinition)
+    let clone = this.clone()
+    clone.conditionalValidationDefinitions.push(validationDefinition)
 
-    return schema
+    return clone
   }
 
   protected addSanitizerDefinition(
     sanitizerDefinition: SanitizerDefinition
   ): this {
-    const schema = this.clone()
-    schema.sanitizerDefinitions.push(sanitizerDefinition)
+    const clone = this.clone()
+    clone.sanitizerDefinitions.push(sanitizerDefinition)
 
-    return schema
+    return clone
   }
 
   protected removeValidationDefinitionsOfType(type: ValidationType): this {
-    const schema = this.clone()
-    schema.validationDefinitions = this.validationDefinitions.filter(
+    const clone = this.clone()
+    clone.validationDefinitions = this.validationDefinitions.filter(
       (definition) => definition.type !== type
     )
 
-    return schema
+    return clone
   }
 
   protected clone(): this {

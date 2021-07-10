@@ -1,5 +1,5 @@
 import { StringSchema } from "./schemas/StringSchema"
-import { difference, keys } from "lodash-es"
+import { difference, keys } from "lodash"
 import { ObjectShape, ValidationError, ValidationOptions } from "./types"
 import { joinPath } from "./helpers"
 

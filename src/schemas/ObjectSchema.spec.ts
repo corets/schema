@@ -1,10 +1,10 @@
 import { ObjectSchema } from "../index"
-import { isString, keys } from "lodash-es"
+import { isString, keys } from "lodash"
 import { translateMessage } from "../translateMessage"
 import { string } from "../factories/string"
 import { array } from "../factories/array"
 import { object } from "../factories/object"
-import { shape } from "../factories/shape"
+import { schema } from "../factories/schema"
 
 describe("ObjectSchema", () => {
   test("required", async () => {
@@ -887,7 +887,7 @@ describe("ObjectSchema", () => {
   ////////////////////////////////////////////////////////////////////////////////
 
   test("value().object()", async () => {
-    const s = shape({ foo: "bar" }).object()
+    const s = schema({ foo: "bar" }).object()
 
     expect(s instanceof ObjectSchema).toBe(true)
     expect(await s.sanitizeAsync(undefined)).toEqual({ foo: "bar" })

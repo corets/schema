@@ -5,7 +5,7 @@ import {
   isArray,
   sortBy,
   uniq,
-} from "lodash-es"
+} from "lodash"
 import isEqual from "fast-deep-equal"
 import { isDefined } from "./mixed"
 import { LazyValue, ValidationFunctionResult } from "../types"

@@ -1,4 +1,4 @@
-import en from "./locales/en.json"
+import type en from "./locales/en"
 
 export interface ValidationSchema<TValue = any> {
   or(orSchema: CustomValidation): this

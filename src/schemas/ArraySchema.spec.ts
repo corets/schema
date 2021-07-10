@@ -1,11 +1,11 @@
 import { ArraySchema } from "../index"
-import { isString } from "lodash-es"
+import { isString } from "lodash"
 import { translateMessage } from "../translateMessage"
 import { string } from "../factories/string"
 import { number } from "../factories/number"
 import { boolean } from "../factories/boolean"
 import { array } from "../factories/array"
-import { shape } from "../factories/shape"
+import { schema } from "../factories/schema"
 
 describe("ArraySchema", () => {
   test("required", async () => {
@@ -690,7 +690,7 @@ describe("ArraySchema", () => {
   ////////////////////////////////////////////////////////////////////////////////
 
   test("value().array()", async () => {
-    const s = shape(["foo"]).array()
+    const s = schema(["foo"]).array()
 
     expect(s instanceof ArraySchema).toBe(true)
     expect(await s.sanitizeAsync(undefined)).toEqual(["foo"])

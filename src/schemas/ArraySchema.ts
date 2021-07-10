@@ -31,15 +31,15 @@ import { validateArrayValues } from "../validateArrayValues"
 
 export class ArraySchema extends Schema<any[]> {
   protected cloneInstance(): this {
-    const schema = new ArraySchema()
-    schema.validationDefinitions = [...this.validationDefinitions]
-    schema.sanitizerDefinitions = [...this.sanitizerDefinitions]
-    schema.conditionalValidationDefinitions = [
+    const clone = new ArraySchema()
+    clone.validationDefinitions = [...this.validationDefinitions]
+    clone.sanitizerDefinitions = [...this.sanitizerDefinitions]
+    clone.conditionalValidationDefinitions = [
       ...this.conditionalValidationDefinitions,
     ]
-    schema.valuesSchema = this.valuesSchema
+    clone.valuesSchema = this.valuesSchema
 
-    return schema as any
+    return clone as any
   }
 
   protected customSanitizeBehavior<TValue, TSanitizedValue = TValue>(
@@ -184,10 +184,10 @@ export class ArraySchema extends Schema<any[]> {
   }
 
   shape(valuesSchema?: ValidationSchema): this {
-    const schema = this.clone()
-    schema.valuesSchema = valuesSchema
+    const clone = this.clone()
+    clone.valuesSchema = valuesSchema
 
-    return schema
+    return clone
   }
 
   toDefault(defaultValue: LazyValue<any[]> = []): this {

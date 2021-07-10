@@ -16,14 +16,14 @@ export class BooleanSchema extends Schema<boolean> {
   }
 
   protected cloneInstance(): this {
-    const schema = new BooleanSchema()
-    schema.validationDefinitions = [...this.validationDefinitions]
-    schema.sanitizerDefinitions = [...this.sanitizerDefinitions]
-    schema.conditionalValidationDefinitions = [
+    const clone = new BooleanSchema()
+    clone.validationDefinitions = [...this.validationDefinitions]
+    clone.sanitizerDefinitions = [...this.sanitizerDefinitions]
+    clone.conditionalValidationDefinitions = [
       ...this.conditionalValidationDefinitions,
     ]
 
-    return schema as any
+    return clone as any
   }
 
   required(

@@ -1,5 +1,5 @@
 import { ValidationSchema } from "./types"
-import { isArray } from "lodash-es"
+import { isArray } from "lodash"
 
 export const sanitizeArrayValuesAsync = async <
   TValue,

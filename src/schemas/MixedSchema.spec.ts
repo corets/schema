@@ -1,7 +1,7 @@
 import { MixedSchema } from "../index"
 import { translateMessage } from "../translateMessage"
 import { mixed } from "../factories/mixed"
-import { shape } from "../factories/shape"
+import { schema } from "../factories/schema"
 
 describe("MixedSchema", () => {
   test("required", async () => {
@@ -119,7 +119,7 @@ describe("MixedSchema", () => {
   ////////////////////////////////////////////////////////////////////////////////
 
   test("value().mixed()", async () => {
-    const s = shape("foo").mixed()
+    const s = schema("foo").mixed()
 
     expect(s instanceof MixedSchema).toBe(true)
     expect(await s.sanitizeAsync(undefined)).toBe("foo")

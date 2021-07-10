@@ -53,14 +53,14 @@ export class StringSchema extends Schema<string> {
   }
 
   protected cloneInstance(): this {
-    const schema = new StringSchema()
-    schema.validationDefinitions = [...this.validationDefinitions]
-    schema.sanitizerDefinitions = [...this.sanitizerDefinitions]
-    schema.conditionalValidationDefinitions = [
+    const clone = new StringSchema()
+    clone.validationDefinitions = [...this.validationDefinitions]
+    clone.sanitizerDefinitions = [...this.sanitizerDefinitions]
+    clone.conditionalValidationDefinitions = [
       ...this.conditionalValidationDefinitions,
     ]
 
-    return schema as any
+    return clone as any
   }
 
   required(

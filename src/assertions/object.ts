@@ -5,7 +5,7 @@ import {
   mapKeys,
   mapValues,
   snakeCase,
-} from "lodash-es"
+} from "lodash"
 import isEqual from "fast-deep-equal"
 import { isDefined } from "./mixed"
 import { mapKeysDeep, mapValuesDeep } from "../helpers"

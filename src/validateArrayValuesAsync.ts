@@ -1,4 +1,4 @@
-import { isArray } from "lodash-es"
+import { isArray } from "lodash"
 import { ValidationError, ValidationOptions, ValidationSchema } from "./types"
 import { joinPath } from "./helpers"
 
