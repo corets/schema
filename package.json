@@ -31,7 +31,7 @@
     "build": "rm -rf dist && rollup -c",
     "release": "np --no-release-draft --tag next",
     "preview": "np --no-release-draft --tag dev",
-    "prepublish": "yarn run build"
+    "version": "yarn run build"
   },
   "dependencies": {
     "@corets/translator": "^0.1.0-0",
