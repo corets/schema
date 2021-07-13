@@ -1,16 +1,14 @@
-import {
-  camelCase,
-  capitalize,
-  endsWith,
-  includes,
-  isEmpty,
-  isNumber,
-  isString,
-  kebabCase,
-  snakeCase,
-  startsWith,
-  trim,
-} from "lodash"
+import camelCase from "lodash/camelCase"
+import capitalize from "lodash/capitalize"
+import endsWith from "lodash/endsWith"
+import includes from "lodash/includes"
+import isEmpty from "lodash/isEmpty"
+import isNumber from "lodash/isNumber"
+import isString from "lodash/isString"
+import kebabCase from "lodash/kebabCase"
+import snakeCase from "lodash/snakeCase"
+import startsWith from "lodash/startsWith"
+import trim from "lodash/trim"
 import { isDefined } from "./mixed"
 import { LazyValue, ValidationFunctionResult } from "../types"
 import { lazyValue } from "../lazyValue"

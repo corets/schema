@@ -1,11 +1,9 @@
-import {
-  camelCase,
-  isObjectLike,
-  kebabCase,
-  mapKeys,
-  mapValues,
-  snakeCase,
-} from "lodash"
+import camelCase from "lodash/camelCase"
+import isObjectLike from "lodash/isObjectLike"
+import kebabCase from "lodash/kebabCase"
+import mapKeys from "lodash/mapKeys"
+import mapValues from "lodash/mapValues"
+import snakeCase from "lodash/snakeCase"
 import isEqual from "fast-deep-equal"
 import { isDefined } from "./mixed"
 import { mapKeysDeep, mapValuesDeep } from "../helpers"

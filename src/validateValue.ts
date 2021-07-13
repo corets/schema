@@ -1,14 +1,6 @@
-import {
-  ValidationDefinition,
-  ValidationError,
-  ValidationFunction,
-  ValidationFunctionResult,
-  ValidationOptions,
-} from "./types"
+import { ValidationDefinition, ValidationError, ValidationFunction, ValidationOptions } from "./types"
 import { createValidationError } from "./createValidationError"
 import { translateValidationDefinition } from "./translateValidationDefinition"
-import { isValidationError } from "./isValidationError"
-import { isArray, isString, isBoolean } from "lodash"
 import { Schema } from "./Schema"
 import { boolean } from "./factories/boolean"
 

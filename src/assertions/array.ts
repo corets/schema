@@ -1,11 +1,9 @@
-import {
-  compact,
-  difference,
-  intersection,
-  isArray,
-  sortBy,
-  uniq,
-} from "lodash"
+import compact from "lodash/compact"
+import difference from "lodash/difference"
+import intersection from "lodash/intersection"
+import isArray from "lodash/isArray"
+import sortBy from "lodash/sortBy"
+import uniq from "lodash/uniq"
 import isEqual from "fast-deep-equal"
 import { isDefined } from "./mixed"
 import { LazyValue, ValidationFunctionResult } from "../types"

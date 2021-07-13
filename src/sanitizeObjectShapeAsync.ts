@@ -1,4 +1,5 @@
-import { isObjectLike, keys } from "lodash"
+import keys from "lodash/keys"
+import isObjectLike from "lodash/isObjectLike"
 import { ObjectShape } from "./types"
 
 export const sanitizeObjectShapeAsync = async <

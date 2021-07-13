@@ -1,4 +1,5 @@
-import { isObjectLike, keys } from "lodash"
+import isObjectLike from "lodash/isObjectLike"
+import keys from "lodash/keys"
 import { ObjectShape } from "./types"
 
 export const sanitizeObjectShape = <TValue, TSanitizedValue = TValue>(

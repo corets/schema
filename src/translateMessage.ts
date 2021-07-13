@@ -1,6 +1,6 @@
 import { ValidationType } from "./types"
 import { schemaTranslator } from "./schemaTranslator"
-import { isFunction } from "lodash"
+import isFunction from "lodash/isFunction"
 
 export const translateMessage = (
   key: ValidationType,

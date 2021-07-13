@@ -1,12 +1,10 @@
-import {
-  compact,
-  isArray,
-  isObject,
-  isPlainObject,
-  map,
-  mapKeys,
-  mapValues,
-} from "lodash"
+import compact from "lodash/compact"
+import isArray from "lodash/isArray"
+import isObject from "lodash/isObject"
+import isPlainObject from "lodash/isPlainObject"
+import map from "lodash/map"
+import mapKeys from "lodash/mapKeys"
+import mapValues from "lodash/mapValues"
 
 // https://github.com/Kikobeats/map-values-deep
 export const mapValuesDeep = (

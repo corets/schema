@@ -1,5 +1,6 @@
 import { ObjectSchema } from "../index"
-import { isString, keys } from "lodash"
+import isString from "lodash/isString"
+import keys from "lodash/keys"
 import { translateMessage } from "../translateMessage"
 import { string } from "../factories/string"
 import { array } from "../factories/array"

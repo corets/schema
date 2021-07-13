@@ -1,5 +1,5 @@
 import { ArraySchema } from "../index"
-import { isString } from "lodash"
+import isString from "lodash/isString"
 import { translateMessage } from "../translateMessage"
 import { string } from "../factories/string"
 import { number } from "../factories/number"

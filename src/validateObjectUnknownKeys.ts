@@ -4,7 +4,8 @@ import {
   ValidationOptions,
   ValidationSchema,
 } from "./types"
-import { difference, keys } from "lodash"
+import difference from "lodash/difference"
+import keys from "lodash/keys"
 import { joinPath } from "./helpers"
 
 export const validateObjectUnknownKeys = (
