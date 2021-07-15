@@ -253,12 +253,15 @@ export const stringDateAfter = (
 ): ValidationFunctionResult => {
   if (!isDefinedNonEmptyString(value)) return
 
+  if (!stringDateTime(value) && !stringDate(value)) {
+    return false
+  }
+
   const date = dayjs(value).toDate()
 
   return (
-    isDate(date) &&
-    (dayjs(date).isAfter(lazyValue(after)) ||
-      (allowSame && dayjs(date).isSame(lazyValue(after), "second")))
+    dayjs(date).isAfter(lazyValue(after)) ||
+    (allowSame && dayjs(date).isSame(lazyValue(after), "second"))
   )
 }
 
@@ -269,12 +272,15 @@ export const stringDateBefore = (
 ): ValidationFunctionResult => {
   if (!isDefinedNonEmptyString(value)) return
 
+  if (!stringDateTime(value) && !stringDate(value)) {
+    return false
+  }
+
   const date = dayjs(value).toDate()
 
   return (
-    isDate(date) &&
-    (dayjs(date).isBefore(lazyValue(before)) ||
-      (allowSame && dayjs(date).isSame(lazyValue(before), "second")))
+    dayjs(date).isBefore(lazyValue(before)) ||
+    (allowSame && dayjs(date).isSame(lazyValue(before), "second"))
   )
 }
 
@@ -296,13 +302,16 @@ export const stringTimeAfter = (
   allowSame: boolean
 ): ValidationFunctionResult => {
   if (!isDefinedNonEmptyString(value)) return
-  if (!stringTime(value)) return false
 
-  const date = dayjs(
-    `${dayjs(new Date()).format("YYYY-MM-DD")}T${value}`
-  ).toDate()
+  if (!stringDateTime(value) && !stringTime(value)) {
+    return false
+  }
+
+  const date = stringDateTime(value)
+    ? dayjs(value).toDate()
+    : dayjs(`${dayjs().format("YYYY-MM-DD")}T${value}`).toDate()
   const dateAfter = dayjs(
-    `${dayjs(new Date()).format("YYYY-MM-DD")}T${lazyValue(after)}`
+    `${dayjs(date).format("YYYY-MM-DD")}T${lazyValue(after)}`
   ).toDate()
 
   return (
@@ -319,13 +328,16 @@ export const stringTimeBefore = (
   allowSame: boolean
 ): ValidationFunctionResult => {
   if (!isDefinedNonEmptyString(value)) return
-  if (!stringTime(value)) return false
 
-  const date = dayjs(
-    `${dayjs(new Date()).format("YYYY-MM-DD")}T${value}`
-  ).toDate()
+  if (!stringDateTime(value) && !stringTime(value)) {
+    return false
+  }
+
+  const date = stringDateTime(value)
+    ? dayjs(value).toDate()
+    : dayjs(`${dayjs().format("YYYY-MM-DD")}T${value}`).toDate()
   const dateBefore = dayjs(
-    `${dayjs(new Date()).format("YYYY-MM-DD")}T${lazyValue(before)}`
+    `${dayjs(date).format("YYYY-MM-DD")}T${lazyValue(before)}`
   ).toDate()
 
   return (

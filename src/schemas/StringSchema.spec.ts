@@ -4,6 +4,7 @@ import { string } from "../factories/string"
 import { schema } from "../factories/schema"
 import dayjs from "dayjs"
 import { stringTimeBefore } from "../assertions/string"
+import { lazyValue } from "../lazyValue"
 
 describe("StringSchema", () => {
   test("required", async () => {
@@ -809,9 +810,49 @@ describe("StringSchema", () => {
     expect(await s1.testAsync("foo")).toBe(false)
     expect(await s1.optional().testAsync("foo")).toBe(false)
     expect(await s1.testAsync("13:00")).toBe(false)
+    expect(
+      await s1.testAsync(
+        dayjs()
+          .startOf("day")
+          .set("hours", 13)
+          .set("minutes", 0)
+          .set("seconds", 0)
+          .toISOString()
+      )
+    ).toBe(false)
     expect(await s1.testAsync("12:00")).toBe(false)
+    expect(
+      await s1.testAsync(
+        dayjs()
+          .startOf("day")
+          .set("hours", 12)
+          .set("minutes", 0)
+          .set("seconds", 0)
+          .toISOString()
+      )
+    ).toBe(false)
     expect(await s1.testAsync("11:59")).toBe(true)
+    expect(
+      await s1.testAsync(
+        dayjs()
+          .startOf("day")
+          .set("hours", 11)
+          .set("minutes", 59)
+          .set("seconds", 59)
+          .toISOString()
+      )
+    ).toBe(true)
     expect(await s1.testAsync("11:00")).toBe(true)
+    expect(
+      await s1.testAsync(
+        dayjs()
+          .startOf("day")
+          .set("hours", 11)
+          .set("minutes", 0)
+          .set("seconds", 0)
+          .toISOString()
+      )
+    ).toBe(true)
     expect(await s1.testAsync("")).toBe(false)
     expect(await s1.optional().testAsync("")).toBe(true)
 
@@ -832,9 +873,49 @@ describe("StringSchema", () => {
     expect(await s1.testAsync("foo")).toBe(false)
     expect(await s1.optional().testAsync("foo")).toBe(false)
     expect(await s1.testAsync("13:00")).toBe(false)
+    expect(
+      await s1.testAsync(
+        dayjs()
+          .startOf("day")
+          .set("hours", 13)
+          .set("minutes", 0)
+          .set("seconds", 0)
+          .toISOString()
+      )
+    ).toBe(false)
     expect(await s1.testAsync("12:00")).toBe(true)
+    expect(
+      await s1.testAsync(
+        dayjs()
+          .startOf("day")
+          .set("hours", 12)
+          .set("minutes", 0)
+          .set("seconds", 0)
+          .toISOString()
+      )
+    ).toBe(true)
     expect(await s1.testAsync("11:59")).toBe(true)
+    expect(
+      await s1.testAsync(
+        dayjs()
+          .startOf("day")
+          .set("hours", 11)
+          .set("minutes", 59)
+          .set("seconds", 59)
+          .toISOString()
+      )
+    ).toBe(true)
     expect(await s1.testAsync("11:00")).toBe(true)
+    expect(
+      await s1.testAsync(
+        dayjs()
+          .startOf("day")
+          .set("hours", 11)
+          .set("minutes", 0)
+          .set("seconds", 0)
+          .toISOString()
+      )
+    ).toBe(true)
     expect(await s1.testAsync("")).toBe(false)
     expect(await s1.optional().testAsync("")).toBe(true)
 
@@ -855,9 +936,49 @@ describe("StringSchema", () => {
     expect(await s1.testAsync("foo")).toBe(false)
     expect(await s1.optional().testAsync("foo")).toBe(false)
     expect(await s1.testAsync("11:59")).toBe(false)
+    expect(
+      await s1.testAsync(
+        dayjs()
+          .startOf("day")
+          .set("hours", 11)
+          .set("minutes", 59)
+          .set("seconds", 59)
+          .toISOString()
+      )
+    ).toBe(false)
     expect(await s1.testAsync("12:00")).toBe(false)
+    expect(
+      await s1.testAsync(
+        dayjs()
+          .startOf("day")
+          .set("hours", 12)
+          .set("minutes", 0)
+          .set("seconds", 0)
+          .toISOString()
+      )
+    ).toBe(false)
     expect(await s1.testAsync("12:01")).toBe(true)
+    expect(
+      await s1.testAsync(
+        dayjs()
+          .startOf("day")
+          .set("hours", 12)
+          .set("minutes", 0)
+          .set("seconds", 1)
+          .toISOString()
+      )
+    ).toBe(true)
     expect(await s1.testAsync("13:00")).toBe(true)
+    expect(
+      await s1.testAsync(
+        dayjs()
+          .startOf("day")
+          .set("hours", 13)
+          .set("minutes", 0)
+          .set("seconds", 0)
+          .toISOString()
+      )
+    ).toBe(true)
     expect(await s1.testAsync("")).toBe(false)
     expect(await s1.optional().testAsync("")).toBe(true)
 
@@ -878,9 +999,49 @@ describe("StringSchema", () => {
     expect(await s1.testAsync("foo")).toBe(false)
     expect(await s1.optional().testAsync("foo")).toBe(false)
     expect(await s1.testAsync("11:59")).toBe(false)
+    expect(
+      await s1.testAsync(
+        dayjs()
+          .startOf("day")
+          .set("hours", 11)
+          .set("minutes", 59)
+          .set("seconds", 59)
+          .toISOString()
+      )
+    ).toBe(false)
     expect(await s1.testAsync("12:00")).toBe(true)
+    expect(
+      await s1.testAsync(
+        dayjs()
+          .startOf("day")
+          .set("hours", 12)
+          .set("minutes", 0)
+          .set("seconds", 0)
+          .toISOString()
+      )
+    ).toBe(true)
     expect(await s1.testAsync("12:01")).toBe(true)
+    expect(
+      await s1.testAsync(
+        dayjs()
+          .startOf("day")
+          .set("hours", 12)
+          .set("minutes", 0)
+          .set("seconds", 1)
+          .toISOString()
+      )
+    ).toBe(true)
     expect(await s1.testAsync("13:00")).toBe(true)
+    expect(
+      await s1.testAsync(
+        dayjs()
+          .startOf("day")
+          .set("hours", 13)
+          .set("minutes", 0)
+          .set("seconds", 0)
+          .toISOString()
+      )
+    ).toBe(true)
     expect(await s1.testAsync("")).toBe(false)
     expect(await s1.optional().testAsync("")).toBe(true)
 
@@ -954,6 +1115,88 @@ describe("StringSchema", () => {
     )
 
     expect(await s2.testAsync("12:00")).toBe(true)
+  })
+
+  test("complex combination of date time before and after", () => {
+    const dateBefore = new Date("2000-01-05T12:00")
+    const dateAfter = new Date("2000-01-01T12:00")
+    const timeBefore = "17:00"
+    const timeAfter = "14:00"
+    const s1 = string()
+      .dateTime()
+      .dateBefore(dateBefore)
+      .dateAfter(dateAfter)
+      .timeBefore(timeBefore)
+      .timeAfter(timeAfter)
+    expect(s1.test("2000-01-01T10:00:00")).toBe(false)
+    expect(s1.test("2000-01-05T13:00:00")).toBe(false)
+    expect(s1.test("2000-01-01T13:00:00")).toBe(false)
+    expect(s1.test("2000-01-01T14:10:00Z")).toBe(true)
+    expect(s1.test("2000-01-01T10:00:00")).toBe(false)
+    expect(s1.test("2000-01-01T17:10:00")).toBe(false)
+    expect(s1.test("2000-01-02T14:10:00")).toBe(true)
+    expect(s1.test("2000-01-02T10:00:00")).toBe(false)
+    expect(s1.test("2000-01-02T17:10:00")).toBe(false)
+    expect(s1.test("2000-01-03T14:10:00")).toBe(true)
+    expect(s1.test("2000-01-03T10:00:00")).toBe(false)
+    expect(s1.test("2000-01-03T17:10:00")).toBe(false)
+    expect(s1.test("2000-01-04T14:10:00")).toBe(true)
+    expect(s1.test("2000-01-04T10:00:00")).toBe(false)
+    expect(s1.test("2000-01-04T17:10:00")).toBe(false)
+    expect(s1.test("2000-01-05T14:10:00")).toBe(false)
+    expect(s1.test("2000-01-05T10:00:00")).toBe(false)
+    expect(s1.test("2000-01-02T17:10:00")).toBe(false)
+  })
+
+  test("time before and after with timezones", () => {
+    const s1 = string().dateTime().timeBeforeOrSame("17:00:00+0200")
+    const s2 = string().dateTime().timeAfterOrSame("17:00:00+0200")
+
+    expect(s1.test(new Date("2000-01-01T17:00:00Z").toISOString())).toBe(false)
+    expect(s1.test(new Date("2000-01-01T16:00:00Z").toISOString())).toBe(false)
+    expect(s1.test(new Date("2000-01-01T15:00:00Z").toISOString())).toBe(true)
+    expect(s1.test(new Date("2000-01-01T14:00:00Z").toISOString())).toBe(true)
+    expect(s1.test(new Date("2000-01-01T17:00:00+0100").toISOString())).toBe(
+      false
+    )
+    expect(s1.test(new Date("2000-01-01T16:00:00+0100").toISOString())).toBe(
+      true
+    )
+    expect(s1.test(new Date("2000-01-01T15:00:00+0100").toISOString())).toBe(
+      true
+    )
+    expect(s1.test(new Date("2000-01-01T14:00:00+0100").toISOString())).toBe(
+      true
+    )
+    expect(s2.test(new Date("2000-01-01T13:00:00Z").toISOString())).toBe(false)
+    expect(s2.test(new Date("2000-01-01T14:00:00Z").toISOString())).toBe(false)
+    expect(s2.test(new Date("2000-01-01T15:00:00Z").toISOString())).toBe(true)
+    expect(s2.test(new Date("2000-01-01T16:00:00Z").toISOString())).toBe(true)
+    expect(s2.test(new Date("2000-01-01T13:00:00+0100").toISOString())).toBe(
+      false
+    )
+    expect(s2.test(new Date("2000-01-01T14:00:00+0100").toISOString())).toBe(
+      false
+    )
+    expect(s2.test(new Date("2000-01-01T15:00:00+0100").toISOString())).toBe(
+      false
+    )
+    expect(s2.test(new Date("2000-01-01T16:00:00+0100").toISOString())).toBe(
+      true
+    )
+
+    const s3 = string().time().timeBeforeOrSame("17:00")
+    const s4 = string().time().timeAfterOrSame("17:00")
+
+    expect(s3.test("19:00")).toBe(false)
+    expect(s3.test("18:00")).toBe(false)
+    expect(s3.test("17:00")).toBe(true)
+    expect(s3.test("16:00")).toBe(true)
+
+    expect(s4.test("15:00")).toBe(false)
+    expect(s4.test("16:00")).toBe(false)
+    expect(s4.test("17:00")).toBe(true)
+    expect(s4.test("18:00")).toBe(true)
   })
 
   ////////////////////////////////////////////////////////////////////////////////
