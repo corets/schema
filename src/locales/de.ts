@@ -65,16 +65,17 @@ export default {
   string_time: "Muss eine Zeitzeichenfolge sein",
   string_date_time: "Muss eine Datums- / Zeitzeichenfolge sein",
   string_date_after: 'Muss ein Datum nach "{{1}}" sein',
-  string_date_after_or_same: 'Muss ein Datum nach "{{1}}" sein',
+  string_date_after_or_equal: 'Muss ein Datum nach "{{1}}" sein',
   string_date_before: 'Muss ein Datum vor "{{1}}" sein',
-  string_date_before_or_same: 'Muss ein Datum vor "{{1}}" sein',
+  string_date_before_or_equal: 'Muss ein Datum vor "{{1}}" sein',
   string_date_between: 'Muss ein Datum zwischen "{{1}}" - "{{2}}" sein.',
-  string_date_between_or_same:
+  string_date_between_or_equal:
     'Muss ein Datum zwischen "{{1}}" - "{{2}}" sein.',
   string_time_after: 'Muss eine Zeit nach "{{1}}" sein',
-  string_time_after_or_same: 'Muss eine Zeit nach "{{1}}" sein',
+  string_time_after_or_equal: 'Muss eine Zeit nach "{{1}}" sein',
   string_time_before: 'Muss eine Zeit vor "{{1}}" sein',
-  string_time_before_or_same: 'Muss eine Zeit vor "{{1}}" sein',
+  string_time_before_or_equal: 'Muss eine Zeit vor "{{1}}" sein',
   string_time_between: 'Muss eine Zeit zwischen "{{1}}" - "{{2}}" sein',
-  string_time_between_or_same: 'Muss eine Zeit zwischen "{{1}}" - "{{2}}" sein',
+  string_time_between_or_equal:
+    'Muss eine Zeit zwischen "{{1}}" - "{{2}}" sein',
 }

@@ -330,13 +330,13 @@ export class StringSchema extends Schema<string> {
     )
   }
 
-  dateBeforeOrSame(
+  dateBeforeOrEqual(
     before: LazyValue<Date>,
     message?: CustomValidationMessage
   ): this {
     return this.addValidationDefinition(
       createValidationDefinition(
-        "string_date_before_or_same",
+        "string_date_before_or_equal",
         stringDateBefore,
         [before, true],
         message
@@ -355,13 +355,13 @@ export class StringSchema extends Schema<string> {
     )
   }
 
-  dateAfterOrSame(
+  dateAfterOrEqual(
     after: LazyValue<Date>,
     message?: CustomValidationMessage
   ): this {
     return this.addValidationDefinition(
       createValidationDefinition(
-        "string_date_after_or_same",
+        "string_date_after_or_equal",
         stringDateAfter,
         [after, true],
         message
@@ -384,14 +384,14 @@ export class StringSchema extends Schema<string> {
     )
   }
 
-  dateBetweenOrSame(
+  dateBetweenOrEqual(
     after: LazyValue<Date>,
     before: LazyValue<Date>,
     message?: CustomValidationMessage
   ): this {
     return this.addValidationDefinition(
       createValidationDefinition(
-        "string_date_between_or_same",
+        "string_date_between_or_equal",
         stringDateBetween,
         [after, before, true],
         message
@@ -413,13 +413,13 @@ export class StringSchema extends Schema<string> {
     )
   }
 
-  timeBeforeOrSame(
+  timeBeforeOrEqual(
     before: LazyValue<string>,
     message?: CustomValidationMessage
   ): this {
     return this.addValidationDefinition(
       createValidationDefinition(
-        "string_time_before_or_same",
+        "string_time_before_or_equal",
         stringTimeBefore,
         [before, true],
         message
@@ -438,13 +438,13 @@ export class StringSchema extends Schema<string> {
     )
   }
 
-  timeAfterOrSame(
+  timeAfterOrEqual(
     after: LazyValue<string>,
     message?: CustomValidationMessage
   ): this {
     return this.addValidationDefinition(
       createValidationDefinition(
-        "string_time_after_or_same",
+        "string_time_after_or_equal",
         stringTimeAfter,
         [after, true],
         message
@@ -467,14 +467,14 @@ export class StringSchema extends Schema<string> {
     )
   }
 
-  timeBetweenOrSame(
+  timeBetweenOrEqual(
     after: LazyValue<string>,
     before: LazyValue<string>,
     message?: CustomValidationMessage
   ): this {
     return this.addValidationDefinition(
       createValidationDefinition(
-        "string_time_between_or_same",
+        "string_time_between_or_equal",
         stringTimeBetween,
         [after, before, true],
         message

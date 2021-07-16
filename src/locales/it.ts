@@ -67,17 +67,17 @@ export default {
   string_time: "Deve essere una stringa di tempo",
   string_date_time: "Deve essere una stringa di data e ora",
   string_date_after: 'Deve essere una data successiva a "{{1}}"',
-  string_date_after_or_same: 'Deve essere una data successiva a "{{1}}"',
+  string_date_after_or_equal: 'Deve essere una data successiva a "{{1}}"',
   string_date_before: 'Deve essere una data precedente a "{{1}}"',
-  string_date_before_or_same: 'Deve essere una data precedente a "{{1}}"',
+  string_date_before_or_equal: 'Deve essere una data precedente a "{{1}}"',
   string_date_between: 'Deve essere una data compresa tra "{{1}}" e "{{2}}"',
-  string_date_between_or_same:
+  string_date_between_or_equal:
     'Deve essere una data compresa tra "{{1}}" e "{{2}}"',
   string_time_after: 'Deve essere un\'ora dopo "{{1}}"',
-  string_time_after_or_same: 'Deve essere un\'ora dopo "{{1}}"',
+  string_time_after_or_equal: 'Deve essere un\'ora dopo "{{1}}"',
   string_time_before: 'Deve essere un\'ora prima di "{{1}}"',
-  string_time_before_or_same: 'Deve essere un\'ora prima di "{{1}}"',
+  string_time_before_or_equal: 'Deve essere un\'ora prima di "{{1}}"',
   string_time_between: 'Deve essere un tempo compreso tra "{{1}}" e "{{2}}"',
-  string_time_between_or_same:
+  string_time_between_or_equal:
     'Deve essere un tempo compreso tra "{{1}}" e "{{2}}"',
 }

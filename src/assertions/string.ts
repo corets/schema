@@ -249,7 +249,7 @@ export const stringDateTime = (value: any): ValidationFunctionResult => {
 export const stringDateAfter = (
   value: any,
   after: LazyValue<Date>,
-  allowSame: boolean
+  allowEqual: boolean
 ): ValidationFunctionResult => {
   if (!isDefinedNonEmptyString(value)) return
 
@@ -261,14 +261,14 @@ export const stringDateAfter = (
 
   return (
     dayjs(date).isAfter(lazyValue(after)) ||
-    (allowSame && dayjs(date).isSame(lazyValue(after), "second"))
+    (allowEqual && dayjs(date).isSame(lazyValue(after), "second"))
   )
 }
 
 export const stringDateBefore = (
   value: any,
   before: LazyValue<Date>,
-  allowSame: boolean
+  allowEqual: boolean
 ): ValidationFunctionResult => {
   if (!isDefinedNonEmptyString(value)) return
 
@@ -280,7 +280,7 @@ export const stringDateBefore = (
 
   return (
     dayjs(date).isBefore(lazyValue(before)) ||
-    (allowSame && dayjs(date).isSame(lazyValue(before), "second"))
+    (allowEqual && dayjs(date).isSame(lazyValue(before), "second"))
   )
 }
 
@@ -288,18 +288,18 @@ export const stringDateBetween = (
   value: any,
   after: LazyValue<Date>,
   before: LazyValue<Date>,
-  allowSame: boolean
+  allowEqual: boolean
 ): ValidationFunctionResult => {
   return (
-    stringDateAfter(value, after, allowSame) &&
-    stringDateBefore(value, before, allowSame)
+    stringDateAfter(value, after, allowEqual) &&
+    stringDateBefore(value, before, allowEqual)
   )
 }
 
 export const stringTimeAfter = (
   value: any,
   after: LazyValue<string>,
-  allowSame: boolean
+  allowEqual: boolean
 ): ValidationFunctionResult => {
   if (!isDefinedNonEmptyString(value)) return
 
@@ -318,14 +318,14 @@ export const stringTimeAfter = (
     isDate(date) &&
     isDate(dateAfter) &&
     (dayjs(date).isAfter(dateAfter) ||
-      (allowSame && dayjs(date).isSame(lazyValue(dateAfter), "second")))
+      (allowEqual && dayjs(date).isSame(lazyValue(dateAfter), "second")))
   )
 }
 
 export const stringTimeBefore = (
   value: any,
   before: LazyValue<string>,
-  allowSame: boolean
+  allowEqual: boolean
 ): ValidationFunctionResult => {
   if (!isDefinedNonEmptyString(value)) return
 
@@ -344,7 +344,7 @@ export const stringTimeBefore = (
     isDate(date) &&
     isDate(dateBefore) &&
     (dayjs(date).isBefore(dateBefore) ||
-      (allowSame && dayjs(date).isSame(lazyValue(dateBefore), "second")))
+      (allowEqual && dayjs(date).isSame(lazyValue(dateBefore), "second")))
   )
 }
 
@@ -352,13 +352,13 @@ export const stringTimeBetween = (
   value: any,
   after: LazyValue<string>,
   before: LazyValue<string>,
-  allowSame: boolean
+  allowEqual: boolean
 ): ValidationFunctionResult => {
   if (!isDefinedNonEmptyString(value)) return
 
   return (
-    stringTimeAfter(value, after, allowSame) &&
-    stringTimeBefore(value, before, allowSame)
+    stringTimeAfter(value, after, allowEqual) &&
+    stringTimeBefore(value, before, allowEqual)
   )
 }
 

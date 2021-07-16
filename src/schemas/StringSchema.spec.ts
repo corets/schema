@@ -3,8 +3,6 @@ import { translateMessage } from "../translateMessage"
 import { string } from "../factories/string"
 import { schema } from "../factories/schema"
 import dayjs from "dayjs"
-import { stringTimeBefore } from "../assertions/string"
-import { lazyValue } from "../lazyValue"
 
 describe("StringSchema", () => {
   test("required", async () => {
@@ -631,9 +629,9 @@ describe("StringSchema", () => {
     ).toBe(true)
   })
 
-  test("dateBeforeOrSame", async () => {
+  test("dateBeforeOrEqual", async () => {
     const before = new Date()
-    const s1 = string().dateBeforeOrSame(before)
+    const s1 = string().dateBeforeOrEqual(before)
 
     expect(await s1.testAsync(before)).toBe(false)
     expect(await s1.optional().testAsync(before)).toBe(false)
@@ -650,13 +648,13 @@ describe("StringSchema", () => {
     expect(await s1.optional().testAsync("")).toBe(true)
 
     expect((await s1.verifyAsync("-"))![0].message).toBe(
-      translateMessage("string_date_before_or_same", [before])
+      translateMessage("string_date_before_or_equal", [before])
     )
     expect(
       await s1.verifyAsync(dayjs(before).subtract(1, "day").toISOString())
     ).toBe(undefined)
 
-    const s2 = string().dateBeforeOrSame(() => before)
+    const s2 = string().dateBeforeOrEqual(() => before)
 
     expect(
       await s2.testAsync(dayjs(before).subtract(1, "day").toISOString())
@@ -693,9 +691,9 @@ describe("StringSchema", () => {
     )
   })
 
-  test("dateAfterOrSame", async () => {
+  test("dateAfterOrEqual", async () => {
     const after = new Date()
-    const s1 = string().dateAfterOrSame(after)
+    const s1 = string().dateAfterOrEqual(after)
 
     expect(await s1.testAsync(after)).toBe(false)
     expect(await s1.optional().testAsync(after)).toBe(false)
@@ -710,13 +708,13 @@ describe("StringSchema", () => {
     expect(await s1.optional().testAsync("")).toBe(true)
 
     expect((await s1.verifyAsync("-"))![0].message).toBe(
-      translateMessage("string_date_after_or_same", [after])
+      translateMessage("string_date_after_or_equal", [after])
     )
     expect(await s1.verifyAsync(dayjs(after).add(1, "day").toISOString())).toBe(
       undefined
     )
 
-    const s2 = string().dateAfterOrSame(() => after)
+    const s2 = string().dateAfterOrEqual(() => after)
 
     expect(await s2.testAsync(dayjs(after).add(1, "day").toISOString())).toBe(
       true
@@ -767,7 +765,7 @@ describe("StringSchema", () => {
     const after = dayjs().subtract(3, "days").toDate()
     const before = dayjs().add(3, "days").toDate()
     const now = new Date()
-    const s1 = string().dateBetweenOrSame(after, before)
+    const s1 = string().dateBetweenOrEqual(after, before)
 
     expect(await s1.testAsync(after)).toBe(false)
     expect(await s1.optional().testAsync(after)).toBe(false)
@@ -791,11 +789,11 @@ describe("StringSchema", () => {
     expect(await s1.optional().testAsync("")).toBe(true)
 
     expect((await s1.verifyAsync("-"))![0].message).toBe(
-      translateMessage("string_date_between_or_same", [after, before])
+      translateMessage("string_date_between_or_equal", [after, before])
     )
     expect(await s1.verifyAsync(now.toISOString())).toBe(undefined)
 
-    const s2 = string().dateBetweenOrSame(
+    const s2 = string().dateBetweenOrEqual(
       () => after,
       () => before
     )
@@ -866,9 +864,9 @@ describe("StringSchema", () => {
     expect(await s2.testAsync("11:00")).toBe(true)
   })
 
-  test("timeBeforeOrSame", async () => {
+  test("timeBeforeOrEqual", async () => {
     const before = "12:00"
-    const s1 = string().timeBeforeOrSame(before)
+    const s1 = string().timeBeforeOrEqual(before)
 
     expect(await s1.testAsync("foo")).toBe(false)
     expect(await s1.optional().testAsync("foo")).toBe(false)
@@ -920,11 +918,11 @@ describe("StringSchema", () => {
     expect(await s1.optional().testAsync("")).toBe(true)
 
     expect((await s1.verifyAsync("-"))![0].message).toBe(
-      translateMessage("string_time_before_or_same", [before])
+      translateMessage("string_time_before_or_equal", [before])
     )
     expect(await s1.verifyAsync("11:00")).toBe(undefined)
 
-    const s2 = string().timeBeforeOrSame(() => before)
+    const s2 = string().timeBeforeOrEqual(() => before)
 
     expect(await s2.testAsync("11:00")).toBe(true)
   })
@@ -992,9 +990,9 @@ describe("StringSchema", () => {
     expect(await s2.testAsync("13:00")).toBe(true)
   })
 
-  test("timeAfterOrSame", async () => {
+  test("timeAfterOrEqual", async () => {
     const after = "12:00"
-    const s1 = string().timeAfterOrSame(after)
+    const s1 = string().timeAfterOrEqual(after)
 
     expect(await s1.testAsync("foo")).toBe(false)
     expect(await s1.optional().testAsync("foo")).toBe(false)
@@ -1046,11 +1044,11 @@ describe("StringSchema", () => {
     expect(await s1.optional().testAsync("")).toBe(true)
 
     expect((await s1.verifyAsync("-"))![0].message).toBe(
-      translateMessage("string_time_after_or_same", [after])
+      translateMessage("string_time_after_or_equal", [after])
     )
     expect(await s1.verifyAsync("13:00")).toBe(undefined)
 
-    const s2 = string().timeAfterOrSame(() => after)
+    const s2 = string().timeAfterOrEqual(() => after)
 
     expect(await s2.testAsync("13:00")).toBe(true)
   })
@@ -1086,10 +1084,10 @@ describe("StringSchema", () => {
     expect(await s2.testAsync("12:00")).toBe(true)
   })
 
-  test("timeBetweenOrSame", async () => {
+  test("timeBetweenOrEqual", async () => {
     const after = "10:00"
     const before = "15:00"
-    const s1 = string().timeBetweenOrSame(after, before)
+    const s1 = string().timeBetweenOrEqual(after, before)
 
     expect(await s1.testAsync("foo")).toBe(false)
     expect(await s1.optional().testAsync("foo")).toBe(false)
@@ -1105,11 +1103,11 @@ describe("StringSchema", () => {
     expect(await s1.optional().testAsync("")).toBe(true)
 
     expect((await s1.verifyAsync("-"))![0].message).toBe(
-      translateMessage("string_time_between_or_same", [after, before])
+      translateMessage("string_time_between_or_equal", [after, before])
     )
     expect(await s1.verifyAsync("12:00")).toBe(undefined)
 
-    const s2 = string().timeBetweenOrSame(
+    const s2 = string().timeBetweenOrEqual(
       () => after,
       () => before
     )
@@ -1149,8 +1147,8 @@ describe("StringSchema", () => {
   })
 
   test("time before and after with timezones", () => {
-    const s1 = string().dateTime().timeBeforeOrSame("17:00:00+0200")
-    const s2 = string().dateTime().timeAfterOrSame("17:00:00+0200")
+    const s1 = string().dateTime().timeBeforeOrEqual("17:00:00+0200")
+    const s2 = string().dateTime().timeAfterOrEqual("17:00:00+0200")
 
     expect(s1.test(new Date("2000-01-01T17:00:00Z").toISOString())).toBe(false)
     expect(s1.test(new Date("2000-01-01T16:00:00Z").toISOString())).toBe(false)
@@ -1185,8 +1183,8 @@ describe("StringSchema", () => {
       true
     )
 
-    const s3 = string().time().timeBeforeOrSame("17:00")
-    const s4 = string().time().timeAfterOrSame("17:00")
+    const s3 = string().time().timeBeforeOrEqual("17:00")
+    const s4 = string().time().timeAfterOrEqual("17:00")
 
     expect(s3.test("19:00")).toBe(false)
     expect(s3.test("18:00")).toBe(false)

@@ -66,16 +66,16 @@ export default {
   string_time: "Doit être une chaîne de temps",
   string_date_time: "Doit être une chaîne de date / heure",
   string_date_after: 'Doit être une date après "{{1}}"',
-  string_date_after_or_same: 'Doit être une date après "{{1}}"',
+  string_date_after_or_equal: 'Doit être une date après "{{1}}"',
   string_date_before: 'Doit être une date antérieure à "{{1}}"',
-  string_date_before_or_same: 'Doit être une date antérieure à "{{1}}"',
+  string_date_before_or_equal: 'Doit être une date antérieure à "{{1}}"',
   string_date_between: 'Doit être une date comprise entre "{{1}}" et "{{2}}"',
-  string_date_between_or_same:
+  string_date_between_or_equal:
     'Doit être une date comprise entre "{{1}}" et "{{2}}"',
   string_time_after: 'Doit être un temps après "{{1}}"',
-  string_time_after_or_same: 'Doit être un temps après "{{1}}"',
+  string_time_after_or_equal: 'Doit être un temps après "{{1}}"',
   string_time_before: 'Doit être une heure avant "{{1}}"',
-  string_time_before_or_same: 'Doit être une heure avant "{{1}}"',
+  string_time_before_or_equal: 'Doit être une heure avant "{{1}}"',
   string_time_between: 'Doit être une heure entre "{{1}}" et "{{2}}"',
-  string_time_between_or_same: 'Doit être une heure entre "{{1}}" et "{{2}}"',
+  string_time_between_or_equal: 'Doit être une heure entre "{{1}}" et "{{2}}"',
 }
