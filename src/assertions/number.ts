@@ -2,6 +2,8 @@ import includes from "lodash/includes"
 import isInteger from "lodash/isInteger"
 import isNumber from "lodash/isNumber"
 import round from "lodash/round"
+import floor from "lodash/floor"
+import ceil from "lodash/ceil"
 import { isDefined } from "./mixed"
 import { LazyValue, ValidationFunctionResult } from "../types"
 import { lazyValue } from "../lazyValue"
@@ -109,12 +111,12 @@ export const numberToRounded = (value: any, precision: LazyValue<number>) => {
   return isNumber(value) ? round(value, lazyValue(precision)) : value
 }
 
-export const numberToFloored = (value: any) => {
-  return isNumber(value) ? Math.floor(value) : value
+export const numberToFloored = (value: any, precision: LazyValue<number>) => {
+  return isNumber(value) ? floor(value, lazyValue(precision)) : value
 }
 
-export const numberToCeiled = (value: any) => {
-  return isNumber(value) ? Math.ceil(value) : value
+export const numberToCeiled = (value: any, precision: LazyValue<number>) => {
+  return isNumber(value) ? ceil(value, lazyValue(precision)) : value
 }
 
 export const numberToTrunced = (value: any) => {
