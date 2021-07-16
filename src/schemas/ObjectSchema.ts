@@ -3,18 +3,12 @@ import {
   objectEquals,
   objectRequired,
   objectToCamelCaseKeys,
-  objectToCamelCaseKeysDeep,
   objectToConstantCaseKeys,
-  objectToConstantCaseKeysDeep,
   objectToDefault,
   objectToKebabCaseKeys,
-  objectToKebabCaseKeysDeep,
   objectToMappedKeys,
-  objectToMappedKeysDeep,
   objectToMappedValues,
   objectToSnakeCaseKeys,
-  objectToSnakeCaseKeysDeep,
-  objectTotMappedValuesDeep,
   objectType,
 } from "../assertions/object"
 import { StringSchema } from "./StringSchema"
@@ -180,7 +174,7 @@ export class ObjectSchema<TValue extends object> extends Schema<TValue> {
     super()
 
     this.skipClone(() => {
-      this.required().shape(objectShape).disallowUnknownKeys()
+      this.required().shape(objectShape).forbidUnknownKeys()
     })
   }
 
@@ -233,7 +227,7 @@ export class ObjectSchema<TValue extends object> extends Schema<TValue> {
     return clone
   }
 
-  disallowUnknownKeys(): this {
+  forbidUnknownKeys(): this {
     const clone = this.clone()
     clone.allowUnknownKeysAndValues = false
 
@@ -260,75 +254,45 @@ export class ObjectSchema<TValue extends object> extends Schema<TValue> {
     )
   }
 
-  toCamelCaseKeys(): this {
+  toCamelCaseKeys(deep: LazyValue<boolean> = true): this {
     return this.addSanitizerDefinition(
-      createSanitizerDefinition(objectToCamelCaseKeys)
+      createSanitizerDefinition(objectToCamelCaseKeys, [deep])
     )
   }
 
-  toCamelCaseKeysDeep(): this {
+  toSnakeCaseKeys(deep: LazyValue<boolean> = true): this {
     return this.addSanitizerDefinition(
-      createSanitizerDefinition(objectToCamelCaseKeysDeep)
+      createSanitizerDefinition(objectToSnakeCaseKeys, [deep])
     )
   }
 
-  toSnakeCaseKeys(): this {
+  toKebabCaseKeys(deep: LazyValue<boolean> = true): this {
     return this.addSanitizerDefinition(
-      createSanitizerDefinition(objectToSnakeCaseKeys)
+      createSanitizerDefinition(objectToKebabCaseKeys, [deep])
     )
   }
 
-  toSnakeCaseKeysDeep(): this {
+  toConstantCaseKeys(deep: LazyValue<boolean> = true): this {
     return this.addSanitizerDefinition(
-      createSanitizerDefinition(objectToSnakeCaseKeysDeep)
+      createSanitizerDefinition(objectToConstantCaseKeys, [deep])
     )
   }
 
-  toKebabCaseKeys(): this {
+  toMappedValues(
+    mapper: (value: any, key: string | number) => any,
+    deep: LazyValue<boolean> = true
+  ): this {
     return this.addSanitizerDefinition(
-      createSanitizerDefinition(objectToKebabCaseKeys)
+      createSanitizerDefinition(objectToMappedValues, [mapper, deep])
     )
   }
 
-  toKebabCaseKeysDeep(): this {
+  toMappedKeys(
+    mapper: (value: any, key: string) => any,
+    deep: LazyValue<boolean> = true
+  ): this {
     return this.addSanitizerDefinition(
-      createSanitizerDefinition(objectToKebabCaseKeysDeep)
-    )
-  }
-
-  toConstantCaseKeys(): this {
-    return this.addSanitizerDefinition(
-      createSanitizerDefinition(objectToConstantCaseKeys)
-    )
-  }
-
-  toConstantCaseKeysDeep(): this {
-    return this.addSanitizerDefinition(
-      createSanitizerDefinition(objectToConstantCaseKeysDeep)
-    )
-  }
-
-  toMappedValues(mapper: (value: any, key: string) => any): this {
-    return this.addSanitizerDefinition(
-      createSanitizerDefinition(objectToMappedValues, [mapper])
-    )
-  }
-
-  toMappedValuesDeep(mapper: (value: any, key: string | number) => any): this {
-    return this.addSanitizerDefinition(
-      createSanitizerDefinition(objectTotMappedValuesDeep, [mapper])
-    )
-  }
-
-  toMappedKeys(mapper: (value: any, key: string) => any): this {
-    return this.addSanitizerDefinition(
-      createSanitizerDefinition(objectToMappedKeys, [mapper])
-    )
-  }
-
-  toMappedKeysDeep(mapper: (value: any, key: string) => any): this {
-    return this.addSanitizerDefinition(
-      createSanitizerDefinition(objectToMappedKeysDeep, [mapper])
+      createSanitizerDefinition(objectToMappedKeys, [mapper, deep])
     )
   }
 }

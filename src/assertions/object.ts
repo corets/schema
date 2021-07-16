@@ -45,78 +45,61 @@ export const objectToDefault = (
   return !isObjectLike(value) ? lazyValue(defaultValue) : value
 }
 
-export const objectToCamelCaseKeys = (value: any) => {
+export const objectToCamelCaseKeys = (value: any, deep: LazyValue<boolean>) => {
   return !isObjectLike(value)
     ? value
+    : lazyValue(deep)
+    ? mapKeysDeep(value, (value, key) => camelCase(key))
     : mapKeys(value, (value, key) => camelCase(key))
 }
 
-export const objectToCamelCaseKeysDeep = (value: any) => {
+export const objectToKebabCaseKeys = (value: any, deep: LazyValue<boolean>) => {
   return !isObjectLike(value)
     ? value
-    : mapKeysDeep(value, (value, key) => camelCase(key))
-}
-
-export const objectToKebabCaseKeys = (value: any) => {
-  return !isObjectLike(value)
-    ? value
+    : lazyValue(deep)
+    ? mapKeysDeep(value, (value, key) => kebabCase(key))
     : mapKeys(value, (value, key) => kebabCase(key))
 }
 
-export const objectToKebabCaseKeysDeep = (value: any) => {
+export const objectToSnakeCaseKeys = (value: any, deep: LazyValue<boolean>) => {
   return !isObjectLike(value)
     ? value
-    : mapKeysDeep(value, (value, key) => kebabCase(key))
-}
-
-export const objectToSnakeCaseKeys = (value: any) => {
-  return !isObjectLike(value)
-    ? value
+    : lazyValue(deep)
+    ? mapKeysDeep(value, (value, key) => snakeCase(key))
     : mapKeys(value, (value, key) => snakeCase(key))
 }
 
-export const objectToSnakeCaseKeysDeep = (value: any) => {
+export const objectToConstantCaseKeys = (
+  value: any,
+  deep: LazyValue<boolean>
+) => {
   return !isObjectLike(value)
     ? value
-    : mapKeysDeep(value, (value, key) => snakeCase(key))
-}
-
-export const objectToConstantCaseKeys = (value: any) => {
-  return !isObjectLike(value)
-    ? value
+    : lazyValue(deep)
+    ? mapKeysDeep(value, (value, key) => snakeCase(key).toUpperCase())
     : mapKeys(value, (value, key) => snakeCase(key).toUpperCase())
-}
-
-export const objectToConstantCaseKeysDeep = (value: any) => {
-  return !isObjectLike(value)
-    ? value
-    : mapKeysDeep(value, (value, key) => snakeCase(key).toUpperCase())
 }
 
 export const objectToMappedValues = (
   value: any,
-  mapper: (value: any, key: string) => any
+  mapper: (value: any, key: string | number) => any,
+  deep: LazyValue<boolean>
 ) => {
-  return !isObjectLike(value) ? value : mapValues(value, mapper)
-}
-
-export const objectTotMappedValuesDeep = (
-  value: any,
-  mapper: (value: any, key: string | number) => any
-) => {
-  return !isObjectLike(value) ? value : mapValuesDeep(value, mapper)
+  return !isObjectLike(value)
+    ? value
+    : lazyValue(deep)
+    ? mapValuesDeep(value, mapper)
+    : mapValues(value, mapper)
 }
 
 export const objectToMappedKeys = (
   value: any,
-  mapper: (value: any, key: string) => any
+  mapper: (value: any, key: string) => any,
+  deep: LazyValue<boolean>
 ) => {
-  return !isObjectLike(value) ? value : mapKeys(value, mapper)
-}
-
-export const objectToMappedKeysDeep = (
-  value: any,
-  mapper: (value: any, key: string) => any
-) => {
-  return !isObjectLike(value) ? value : mapKeysDeep(value, mapper)
+  return !isObjectLike(value)
+    ? value
+    : lazyValue(deep)
+    ? mapKeysDeep(value, mapper)
+    : mapKeys(value, mapper)
 }

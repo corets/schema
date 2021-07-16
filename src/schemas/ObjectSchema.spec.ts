@@ -225,7 +225,7 @@ describe("ObjectSchema", () => {
   })
 
   test("toCamelCaseKeys", async () => {
-    const s = object().toCamelCaseKeys()
+    const s = object().toCamelCaseKeys(false)
 
     expect(await s.sanitizeAsync({ foo_bar: { yolo_swag: "here" } })).toEqual({
       fooBar: { yolo_swag: "here" },
@@ -233,7 +233,7 @@ describe("ObjectSchema", () => {
   })
 
   test("toCamelCaseKeysDeep", async () => {
-    const s = object().toCamelCaseKeysDeep()
+    const s = object().toCamelCaseKeys()
 
     expect(await s.sanitizeAsync({ foo_bar: { yolo_swag: "here" } })).toEqual({
       fooBar: { yoloSwag: "here" },
@@ -241,7 +241,7 @@ describe("ObjectSchema", () => {
   })
 
   test("toSnakeCaseKeys", async () => {
-    const s = object().toSnakeCaseKeys()
+    const s = object().toSnakeCaseKeys(false)
 
     expect(await s.sanitizeAsync({ fooBar: { yoloSwag: "here" } })).toEqual({
       foo_bar: { yoloSwag: "here" },
@@ -249,7 +249,7 @@ describe("ObjectSchema", () => {
   })
 
   test("toSnakeCaseKeysDeep", async () => {
-    const s = object().toSnakeCaseKeysDeep()
+    const s = object().toSnakeCaseKeys()
 
     expect(await s.sanitizeAsync({ fooBar: { yoloSwag: "here" } })).toEqual({
       foo_bar: { yolo_swag: "here" },
@@ -257,7 +257,7 @@ describe("ObjectSchema", () => {
   })
 
   test("toKebabCaseKeys", async () => {
-    const s = object().toKebabCaseKeys()
+    const s = object().toKebabCaseKeys(false)
 
     expect(await s.sanitizeAsync({ foo_bar: { yolo_swag: "here" } })).toEqual({
       "foo-bar": { yolo_swag: "here" },
@@ -265,7 +265,7 @@ describe("ObjectSchema", () => {
   })
 
   test("toKebabCaseKeysDeep", async () => {
-    const s = object().toKebabCaseKeysDeep()
+    const s = object().toKebabCaseKeys()
 
     expect(await s.sanitizeAsync({ foo_bar: { yolo_swag: "here" } })).toEqual({
       "foo-bar": { "yolo-swag": "here" },
@@ -273,7 +273,7 @@ describe("ObjectSchema", () => {
   })
 
   test("toConstantCaseKeys", async () => {
-    const s = object().toConstantCaseKeys()
+    const s = object().toConstantCaseKeys(false)
 
     expect(await s.sanitizeAsync({ fooBar: { yoloSwag: "here" } })).toEqual({
       FOO_BAR: { yoloSwag: "here" },
@@ -281,7 +281,7 @@ describe("ObjectSchema", () => {
   })
 
   test("toConstantCaseKeysDeep", async () => {
-    const s = object().toConstantCaseKeysDeep()
+    const s = object().toConstantCaseKeys()
 
     expect(await s.sanitizeAsync({ fooBar: { yoloSwag: "here" } })).toEqual({
       FOO_BAR: { YOLO_SWAG: "here" },
@@ -289,7 +289,7 @@ describe("ObjectSchema", () => {
   })
 
   test("toMappedKeys", async () => {
-    const s = object().toMappedKeys((value, key) => `${key}_`)
+    const s = object().toMappedKeys((value, key) => `${key}_`, false)
 
     expect(
       await s.sanitizeAsync({
@@ -303,8 +303,9 @@ describe("ObjectSchema", () => {
   })
 
   test("toMappedValues", async () => {
-    const s = object().toMappedValues((value, key) =>
-      isString(value) ? `${value}_` : value
+    const s = object().toMappedValues(
+      (value, key) => (isString(value) ? `${value}_` : value),
+      false
     )
 
     expect(
@@ -319,7 +320,7 @@ describe("ObjectSchema", () => {
   })
 
   test("toMappedKeysDeep", async () => {
-    const s = object().toMappedKeysDeep((value, key) => `${key}_`)
+    const s = object().toMappedKeys((value, key) => `${key}_`)
 
     expect(
       await s.sanitizeAsync({
@@ -333,8 +334,9 @@ describe("ObjectSchema", () => {
   })
 
   test("toMappedValues", async () => {
-    const s = object().toMappedValues((value, key) =>
-      isString(value) ? `${value}_` : value
+    const s = object().toMappedValues(
+      (value, key) => (isString(value) ? `${value}_` : value),
+      false
     )
 
     expect(
@@ -349,7 +351,7 @@ describe("ObjectSchema", () => {
   })
 
   test("toMappedValuesDeep", async () => {
-    const s = object().toMappedValuesDeep((value, key) =>
+    const s = object().toMappedValues((value, key) =>
       isString(value) ? `${value}_` : value
     )
 
@@ -479,7 +481,7 @@ describe("ObjectSchema", () => {
     expect(await s.verifyAsync({ foo: "1234" })).toBe(undefined)
   })
 
-  test("disallowUnknownKeys", async () => {
+  test("forbidUnknownKeys", async () => {
     const s1 = object({ foo: string() })
 
     expect(await s1.testAsync({ foo: "bar" })).toBe(true)
@@ -491,7 +493,7 @@ describe("ObjectSchema", () => {
       })
     ).toBe(false)
 
-    const s2 = object({ foo: string() }).disallowUnknownKeys()
+    const s2 = object({ foo: string() }).forbidUnknownKeys()
 
     expect(await s2.testAsync({ foo: "bar" })).toBe(true)
     expect(await s2.testAsync({ yolo: "swag" })).toBe(false)
