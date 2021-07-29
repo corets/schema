@@ -22,7 +22,7 @@
     "/dist"
   ],
   "repository": "github:corets/schema",
-  "homepage": "https://corets.github.io/schema",
+  "homepage": "https://docs.corets.io/services/schema",
   "publishConfig": {
     "access": "public",
     "registry": "https://registry.npmjs.org"
