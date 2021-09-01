@@ -1,4 +1,4 @@
-import { LazyValue, ValidationSchema } from "../types"
+import { ValidationSchema } from "../types"
 import {
   array,
   boolean,
@@ -10,14 +10,14 @@ import {
   object,
 } from ".."
 
-export const schema = (defaultValue?: LazyValue<any>): SchemaFactory => {
+export const schema = (defaultValue?: any): SchemaFactory => {
   return new SchemaFactory(defaultValue)
 }
 
 class SchemaFactory {
-  private readonly defaultValue?: LazyValue<any>
+  private readonly defaultValue?: any
 
-  constructor(defaultValue?: LazyValue<any>) {
+  constructor(defaultValue?: any) {
     this.defaultValue = defaultValue
   }
 
