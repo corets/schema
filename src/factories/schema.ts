@@ -1,50 +1,50 @@
-import { ValidationSchema } from "../types"
+import { LazyValue, ValidationSchema } from "../types"
 import {
-  ArraySchema,
-  BooleanSchema,
-  DateSchema,
-  MixedSchema,
-  NumberSchema,
-  ObjectSchema,
+  array,
+  boolean,
+  date,
+  mixed,
+  number,
   ObjectShape,
-  StringSchema,
+  string,
+  object,
 } from ".."
 
-export const schema = (defaultValue?: any): SchemaFactory => {
+export const schema = (defaultValue?: LazyValue<any>): SchemaFactory => {
   return new SchemaFactory(defaultValue)
 }
 
 class SchemaFactory {
-  private readonly defaultValue?: any
+  private readonly defaultValue?: LazyValue<any>
 
-  constructor(defaultValue?: any) {
+  constructor(defaultValue?: LazyValue<any>) {
     this.defaultValue = defaultValue
   }
 
   string() {
-    return new StringSchema().toDefault(this.defaultValue)
+    return string().toDefault(this.defaultValue)
   }
 
   number() {
-    return new NumberSchema().toDefault(this.defaultValue)
+    return number().toDefault(this.defaultValue)
   }
 
   boolean() {
-    return new BooleanSchema().toDefault(this.defaultValue)
+    return boolean().toDefault(this.defaultValue)
   }
 
   date() {
-    return new DateSchema().toDefault(this.defaultValue)
+    return date().toDefault(this.defaultValue)
   }
   array(arrayShape?: ValidationSchema) {
-    return new ArraySchema(arrayShape).toDefault(this.defaultValue)
+    return array(arrayShape).toDefault(this.defaultValue)
   }
 
   object<TValue extends object = any>(objectShape?: ObjectShape<TValue>) {
-    return new ObjectSchema<TValue>(objectShape).toDefault(this.defaultValue)
+    return object<TValue>(objectShape).toDefault(this.defaultValue)
   }
 
   mixed() {
-    return new MixedSchema().toDefault(this.defaultValue)
+    return mixed().toDefault(this.defaultValue)
   }
 }
