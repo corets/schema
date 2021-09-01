@@ -1,13 +1,13 @@
 import { ValidationSchema } from "../types"
 import {
-  array,
-  boolean,
-  date,
-  mixed,
-  number,
+  ArraySchema,
+  BooleanSchema,
+  DateSchema,
+  MixedSchema,
+  NumberSchema,
+  ObjectSchema,
   ObjectShape,
-  string,
-  object,
+  StringSchema,
 } from ".."
 
 export const schema = (defaultValue?: any): SchemaFactory => {
@@ -22,29 +22,29 @@ class SchemaFactory {
   }
 
   string() {
-    return string().toDefault(this.defaultValue)
+    return new StringSchema().toDefault(this.defaultValue)
   }
 
   number() {
-    return number().toDefault(this.defaultValue)
+    return new NumberSchema().toDefault(this.defaultValue)
   }
 
   boolean() {
-    return boolean().toDefault(this.defaultValue)
+    return new BooleanSchema().toDefault(this.defaultValue)
   }
 
   date() {
-    return date().toDefault(this.defaultValue)
+    return new DateSchema().toDefault(this.defaultValue)
   }
   array(arrayShape?: ValidationSchema) {
-    return array(arrayShape).toDefault(this.defaultValue)
+    return new ArraySchema(arrayShape).toDefault(this.defaultValue)
   }
 
   object<TValue extends object = any>(objectShape?: ObjectShape<TValue>) {
-    return object<TValue>(objectShape).toDefault(this.defaultValue)
+    return new ObjectSchema<TValue>(objectShape).toDefault(this.defaultValue)
   }
 
   mixed() {
-    return mixed().toDefault(this.defaultValue)
+    return new MixedSchema().toDefault(this.defaultValue)
   }
 }
